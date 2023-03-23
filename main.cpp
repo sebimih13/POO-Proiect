@@ -1,13 +1,12 @@
 #include <iostream>
-#include <conio.h>
+#include <cstdio>
 
 int main() 
 {
-    std::cout << "Hello, world!\n";
-    std::cout << "test\n";
+    std::cout << "Hello, world!\n\n";
 
-    printf("Press any key...\n");
-    _getch();
+    std::cout << "Press ENTER to continue\n";
+    std::getchar();
 
     return 0;
 }
