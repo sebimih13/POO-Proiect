@@ -10,7 +10,7 @@ private:
 
 public:
 	/** Constructor */
-	Item(const std::string& Name, const std::string Description);
+	Item(const std::string& Name, const std::string& Description);
 
 	/** Copy Constructor */
 	Item(const Item& other);

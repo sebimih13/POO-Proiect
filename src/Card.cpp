@@ -5,7 +5,7 @@
 Card::Card(const std::string& Name, const std::string& Description, const unsigned int Energy, const CardType Type, const CardRarity Rarity)
 	: Name(Name), Description(Description),
 	  EnergyCost(Energy),
-	  Rarity(Rarity), Type(Type)
+	  Type(Type), Rarity(Rarity)
 {
 	std::cout << "New Card\n";
 }

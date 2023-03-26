@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Item::Item(const std::string& Name, const std::string Description)
+Item::Item(const std::string& Name, const std::string& Description)
 	: Name(Name), Description(Description)
 {
 	std::cout << "New Item\n";
