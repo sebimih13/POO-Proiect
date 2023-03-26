@@ -14,19 +14,19 @@ Character::Character(const std::string& Name, const unsigned int MaxHealth, cons
 	std::cout << "New Character\n";
 
 	// Cards
-	Card AttackCard = Card("Strike", "Deal damage 10 damage", 2, CardType::Attack, CardRarity::Common);
-	Card ShieldCard = Card("Defend", "Gain 5 Block", 1, CardType::Skill, CardRarity::Common);
-	Card CurseCard = Card("Curse", "Unplayable. Cannot be removed from your deck.", 0, CardType::Curse, CardRarity::Common);
+	Card AttackCard("Strike", "Deal damage 10 damage", 2, CardType::Attack, CardRarity::Common);
+	Card ShieldCard("Defend", "Gain 5 Block", 1, CardType::Skill, CardRarity::Common);
+	Card CurseCard("Curse", "Unplayable. Cannot be removed from your deck.", 0, CardType::Curse, CardRarity::Common);
 
 	Cards.push_back(AttackCard);
 	Cards.push_back(ShieldCard);
 	Cards.push_back(CurseCard);
 
 	// Items
-	Item Potion = Item("Potion", "Heal 20 HP");
-	Item BlockPotion = Item("Block Potion", "Gain 20 Shield");
-	Item EnergyPotion = Item("Energy Potion", "Regenerates your Energy");
-	Item HeartOfIron = Item("Heart Of Iron", "Raise your max HP by 10");
+	Item Potion("Potion", "Heal 20 HP");
+	Item BlockPotion("Block Potion", "Gain 20 Shield");
+	Item EnergyPotion("Energy Potion", "Regenerates your Energy");
+	Item HeartOfIron("Heart Of Iron", "Raise your max HP by 10");
 
 	Items.push_back(Potion);
 	Items.push_back(BlockPotion);
@@ -78,12 +78,12 @@ std::ostream& operator << (std::ostream& os, const Character& c)
 	return os;
 }
 
-void Character::AddCard(Card NewCard)
+void Character::AddCard(const Card& NewCard)
 {
 	Cards.push_back(NewCard);
 }
 
-void Character::AddItems(Item NewItem)
+void Character::AddItem(const Item& NewItem)
 {
 	Items.push_back(NewItem);
 }
@@ -104,22 +104,27 @@ void Character::PrintItems()
 	}
 }
 
-void Character::IncreaseMaxHealth(unsigned int Amount)
+void Character::IncreaseMaxHealth(const unsigned int Amount)
 {
 	MaxHealth += Amount;
 }
 
-void Character::TakeDamage(unsigned int Damage)
+void Character::Heal(const unsigned int Amount)
+{
+	CurrentHealth += Amount;
+}
+
+void Character::TakeDamage(const unsigned int Damage)
 {
 	CurrentHealth -= Damage;
 }
 
-void Character::ConsumeEnergy(unsigned int Amount)
+void Character::ConsumeEnergy(const unsigned int Amount)
 {
 	CurrentEnergy -= Amount;
 }
 
-void Character::IncreaseShield(unsigned int Amount)
+void Character::IncreaseShield(const unsigned int Amount)
 {
 	Shield += Amount;
 }

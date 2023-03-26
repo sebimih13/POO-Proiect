@@ -40,20 +40,21 @@ public:
 	friend std::ostream& operator << (std::ostream& os, const Character& c);
 
 	/** Cards/Items Funtions */
-	void AddCard(Card NewCard);
-	void AddItems(Item NewItem);
+	void AddCard(const Card& NewCard);
+	void AddItem(const Item& NewItem);
 
 	void PrintCards();
 	void PrintItems();
 
 	/** Health */
-	void IncreaseMaxHealth(unsigned int Amount);
-	void TakeDamage(unsigned int Damage);
+	void IncreaseMaxHealth(const unsigned int Amount);
+	void Heal(const unsigned int Amount);
+	void TakeDamage(const unsigned int Damage);
 
 	/** Energy */
-	void ConsumeEnergy(unsigned int Amount);
+	void ConsumeEnergy(const unsigned int Amount);
 
 	/** Shield */
-	void IncreaseShield(unsigned int Amount);
+	void IncreaseShield(const unsigned int Amount);
 };
 

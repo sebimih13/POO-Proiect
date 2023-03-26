@@ -44,10 +44,11 @@ public:
 	/** Operator << */
 	friend std::ostream& operator << (std::ostream& os, const Card& c);
 
-	/** Use Card */
-	// virtual void Use();
-
+	/** Get string based on enum type */
 	static const std::string GetType(const CardType Type);
 	static const std::string GetRarity(const CardRarity Rarity);
+
+	/** Use Card */
+	// virtual void Use();
 };
 
