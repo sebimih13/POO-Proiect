@@ -28,9 +28,7 @@ int main() {
     XInitThreads();
     #endif
 
-    SomeClass *c = getC();
-    std::cout << c << "\n";
-    delete c;
+
 
     sf::RenderWindow window;
     // NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30
@@ -74,13 +72,6 @@ int main() {
     std::cout << Player << '\n';
 
 
-    // End
-    std::cout << "\nPress ENTER to continue\n";
-    std::getchar();
-
-    return 0;
-
-
 
     while(window.isOpen()) {
         sf::Event e;
@@ -107,5 +98,12 @@ int main() {
         window.display();
     }
 
+
+    // End
+    std::cout << "\nPress ENTER to continue\n";
+    std::getchar();
+
     return 0;
+
 }
+
