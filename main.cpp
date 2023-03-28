@@ -13,14 +13,17 @@
 #include <X11/Xlib.h>
 #endif
 
-int main() {
+void AddTextures();
+
+int main() 
+{
     #ifdef __linux__
     XInitThreads();
     #endif
 
     sf::RenderWindow window;
     // NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30
-    window.create(sf::VideoMode({800, 700}), "My Window", sf::Style::Default);
+    window.create(sf::VideoMode({800, 700}), "Card Game", sf::Style::Default);
     window.setVerticalSyncEnabled(true);
     //window.setFramerateLimit(60);
 
@@ -86,6 +89,11 @@ int main() {
             }
         }
 
+
+        // Game Logic
+        AddTextures();
+
+
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(300ms);
 
@@ -94,5 +102,14 @@ int main() {
     }
 
     return 0;
+}
+
+void AddTextures()
+{
+    sf::Texture texture;
+    if (!texture.loadFromFile("assets/Bash.png"))
+    {
+        std::cout << "ERROR : Texture \n";
+    }
 }
 
