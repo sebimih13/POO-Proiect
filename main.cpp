@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdio>
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -14,21 +13,10 @@
 #include <X11/Xlib.h>
 #endif
 
-class SomeClass {
-public:
-    explicit SomeClass(int) {}
-};
-
-SomeClass *getC() {
-    return new SomeClass{2};
-}
-
 int main() {
     #ifdef __linux__
     XInitThreads();
     #endif
-
-
 
     sf::RenderWindow window;
     // NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30
@@ -73,24 +61,31 @@ int main() {
 
 
 
-    while(window.isOpen()) {
+    while(window.isOpen()) 
+    {
         sf::Event e;
-        while(window.pollEvent(e)) {
-            switch(e.type) {
-            case sf::Event::Closed:
-                window.close();
-                break;
-            case sf::Event::Resized:
-                std::cout << "New width: " << window.getSize().x << '\n'
-                          << "New height: " << window.getSize().y << '\n';
-                break;
-            case sf::Event::KeyPressed:
-                std::cout << "Received key " << (e.key.code == sf::Keyboard::X ? "X" : "(other)") << "\n";
-                break;
-            default:
-                break;
+        while(window.pollEvent(e))
+        {
+            switch(e.type) 
+            {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                
+                case sf::Event::Resized:
+                    std::cout << "New width: " << window.getSize().x << '\n'
+                              << "New height: " << window.getSize().y << '\n';
+                    break;
+                
+                case sf::Event::KeyPressed:
+                    std::cout << "Received key " << (e.key.code == sf::Keyboard::X ? "X" : "(other)") << "\n";
+                    break;
+                
+                default:
+                    break;
             }
         }
+
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(300ms);
 
@@ -98,12 +93,6 @@ int main() {
         window.display();
     }
 
-
-    // End
-    std::cout << "\nPress ENTER to continue\n";
-    std::getchar();
-
     return 0;
-
 }
 
