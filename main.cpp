@@ -13,8 +13,6 @@
 #include <X11/Xlib.h>
 #endif
 
-void AddTextures();
-
 int main() 
 {
     #ifdef __linux__
@@ -63,6 +61,17 @@ int main()
     std::cout << Player << '\n';
 
 
+    // Load Textures
+    sf::Texture texture;
+    if (!texture.loadFromFile("assets/bash.png"))
+    {
+        std::cout << "ERROR : bash.png \n";
+    }
+
+    sf::Sprite AttackCardSprite;
+    AttackCardSprite.setTexture(texture);
+    AttackCardSprite.setPosition(sf::Vector2f(100, 100));
+    AttackCardSprite.setScale(sf::Vector2f(1, 1));
 
     while(window.isOpen()) 
     {
@@ -89,27 +98,17 @@ int main()
             }
         }
 
-
-        // Game Logic
-        AddTextures();
-
-
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(300ms);
 
         window.clear();
+
+        // Draw Scene
+        window.draw(AttackCardSprite);
+
         window.display();
     }
 
     return 0;
-}
-
-void AddTextures()
-{
-    sf::Texture texture;
-    if (!texture.loadFromFile("assets/Bash.png"))
-    {
-        std::cout << "ERROR : Texture \n";
-    }
 }
 
