@@ -108,7 +108,7 @@ void Character::Draw(sf::RenderWindow& Window)
 	NameText.setFont(Font);
 	NameText.setString(Name);
 	NameText.setCharacterSize(24);
-	NameText.setColor(sf::Color::White);
+	NameText.setFillColor(sf::Color::White);
 	NameText.setPosition(sf::Vector2f(20.0f, 20.0f));
 
 	Window.draw(NameText);
@@ -118,7 +118,7 @@ void Character::Draw(sf::RenderWindow& Window)
 	HealthText.setFont(Font);
 	HealthText.setString("Health " + std::to_string(CurrentHealth) + "/" + std::to_string(MaxHealth));
 	HealthText.setCharacterSize(24);
-	HealthText.setColor(sf::Color::Red);
+	HealthText.setFillColor(sf::Color::Red);
 
 	float HealthTextPosX = 20.0f;
 	float HealthTextPosY = NameText.getGlobalBounds().getPosition().y + NameText.getGlobalBounds().height + 30.0f;
@@ -131,7 +131,7 @@ void Character::Draw(sf::RenderWindow& Window)
 	ShieldText.setFont(Font);
 	ShieldText.setString("Shield " + std::to_string(Shield));
 	ShieldText.setCharacterSize(24);
-	ShieldText.setColor(sf::Color::Blue);
+	ShieldText.setFillColor(sf::Color::Blue);
 
 	float ShieldTextPosX = 20.0f;
 	float ShieldTextPosY = HealthText.getGlobalBounds().getPosition().y + HealthText.getGlobalBounds().height + 20.0f;
@@ -151,7 +151,7 @@ void Character::Draw(sf::RenderWindow& Window)
 	EnergyText.setFont(Font);
 	EnergyText.setString(std::to_string(CurrentEnergy) + "/" + std::to_string(MaxEnergy));
 	EnergyText.setCharacterSize(30);
-	EnergyText.setColor(sf::Color::Black);
+	EnergyText.setFillColor(sf::Color::Black);
 	EnergyText.setStyle(sf::Text::Bold);
 
 	float EnergyTextPosX = EnergyBackgroundSprite.getGlobalBounds().getPosition().x + EnergyBackgroundSprite.getGlobalBounds().width / 2.0f - EnergyText.getGlobalBounds().width / 2.0f;
