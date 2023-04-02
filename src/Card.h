@@ -36,7 +36,7 @@ private:
 
 public:
 	/** Constructor */
-	Card(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0, const CardType Type = CardType::Attack, const CardRarity Rarity = CardRarity::Common);
+	explicit Card(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0, const CardType Type = CardType::Attack, const CardRarity Rarity = CardRarity::Common);
 
 	/** Copy Constructor */
 	Card(const Card& other);

@@ -16,7 +16,7 @@ private:
 
 public:
 	/** Constructor */
-	Item(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+	explicit Item(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
 	Item(const Item& other);
