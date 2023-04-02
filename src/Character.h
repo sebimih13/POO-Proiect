@@ -3,9 +3,8 @@
 #include <string>
 #include <vector>
 
-/** Forward Declarations */
-class Item;
-class Card;
+#include "Card.h"
+#include "Item.h"
 
 class Character
 {
@@ -23,6 +22,24 @@ private:
 	std::vector<Card> Cards;
 	std::vector<Item> Items;
 
+	sf::Texture EnergyBackgroundTexture;
+	sf::Sprite EnergyBackgroundSprite;
+
+	const std::vector<sf::Vector2f> CardPosition = {
+		  sf::Vector2f(100.0f, 525.0f),
+		  sf::Vector2f(300.0f, 525.0f),
+		  sf::Vector2f(500.0f, 525.0f),
+		  sf::Vector2f(700.0f, 525.0f),
+		  sf::Vector2f(900.0f, 525.0f)
+	};
+
+	const std::vector<sf::Vector2f> ItemPosition = {
+		  sf::Vector2f(20.0f, 170.0f),
+		  sf::Vector2f(70.0f, 170.0f),
+		  sf::Vector2f(120.0f, 170.0f),
+		  sf::Vector2f(170.0f, 170.0f)
+	};
+
 public:
 	/** Constructor */
 	Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int MaxEnergy = 5, const unsigned int Shield = 0);
@@ -39,12 +56,15 @@ public:
 	/** Operator << */
 	friend std::ostream& operator << (std::ostream& os, const Character& c);
 
+	/** Draw */
+	void Draw(sf::RenderWindow& Window);
+
 	/** Cards/Items Funtions */
 	void AddCard(const Card& NewCard);
 	void AddItem(const Item& NewItem);
 
-	void PrintCards();
-	void PrintItems();
+	void PrintCards() const;
+	void PrintItems() const;
 
 	/** Health */
 	void IncreaseMaxHealth(const unsigned int Amount);
@@ -56,5 +76,9 @@ public:
 
 	/** Shield */
 	void IncreaseShield(const unsigned int Amount);
+
+	/** Getters / Setters */
+	inline std::vector<Card>& GetCards() { return Cards; }
+	inline std::vector<Item>& GetItems() { return Items; }
 };
 

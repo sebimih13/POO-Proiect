@@ -6,8 +6,6 @@
 #include <thread>
 
 #include "src/Character.h"
-#include "src/Card.h"
-#include "src/Item.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -21,7 +19,7 @@ int main()
 
     sf::RenderWindow window;
     // NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30
-    window.create(sf::VideoMode({800, 700}), "Card Game", sf::Style::Default);
+    window.create(sf::VideoMode({1200, 800}), "Card Game", sf::Style::Default);
     window.setVerticalSyncEnabled(true);
     //window.setFramerateLimit(60);
 
@@ -37,11 +35,11 @@ int main()
     Player.PrintItems();
 
     // New Cards
-    Card NewCard("NewCard");
+    Card NewCard("assets/cards/Strike.png");
     Player.AddCard(NewCard);
 
     // New Items
-    Item NewItem("NewItem");
+    Item NewItem("assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
     Player.AddItem(NewItem);
 
     // Print Cards + Items
@@ -61,40 +59,28 @@ int main()
     std::cout << Player << '\n';
 
 
-    // Load Textures
-    sf::Texture texture;
-    if (!texture.loadFromFile("assets/bash.png"))
-    {
-        std::cout << "ERROR : bash.png \n";
-    }
-
-    sf::Sprite AttackCardSprite;
-    AttackCardSprite.setTexture(texture);
-    AttackCardSprite.setPosition(sf::Vector2f(100, 100));
-    AttackCardSprite.setScale(sf::Vector2f(1, 1));
-
-    while(window.isOpen()) 
+    while (window.isOpen())
     {
         sf::Event e;
-        while(window.pollEvent(e))
+        while (window.pollEvent(e))
         {
-            switch(e.type) 
+            switch (e.type)
             {
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-                
-                case sf::Event::Resized:
-                    std::cout << "New width: " << window.getSize().x << '\n'
-                              << "New height: " << window.getSize().y << '\n';
-                    break;
-                
-                case sf::Event::KeyPressed:
-                    std::cout << "Received key " << (e.key.code == sf::Keyboard::X ? "X" : "(other)") << "\n";
-                    break;
-                
-                default:
-                    break;
+            case sf::Event::Closed:
+                window.close();
+                break;
+
+            case sf::Event::Resized:
+                std::cout << "New width: " << window.getSize().x << '\n'
+                          << "New height: " << window.getSize().y << '\n';
+                break;
+
+            case sf::Event::KeyPressed:
+                std::cout << "Received key " << (e.key.code == sf::Keyboard::X ? "X" : "(other)") << "\n";
+                break;
+
+            default:
+                break;
             }
         }
 
@@ -104,7 +90,13 @@ int main()
         window.clear();
 
         // Draw Scene
-        window.draw(AttackCardSprite);
+
+        // Draw Player
+        Player.Draw(window);
+
+        // TODO : Draw Enemy
+
+       
 
         window.display();
     }
