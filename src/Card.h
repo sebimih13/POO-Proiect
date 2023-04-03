@@ -4,20 +4,9 @@
 
 #include <SFML/Graphics.hpp>
 
-enum CardType
-{
-	Attack,
-	Skill,
-	Curse	 
-};
-
-enum CardRarity
-{
-	Common,
-	Uncommon,
-	Rare,
-	Special
-};
+/** Forward Declarations */
+class Player;
+class Enemy;
 
 class Card
 {
@@ -28,21 +17,20 @@ private:
 
 	unsigned int EnergyCost;
 
-	CardType Type;
-	CardRarity Rarity;
-
 	sf::Texture Texture;
 	sf::Sprite Sprite;
 
+	bool IsSelected;
+
 public:
 	/** Constructor */
-	explicit Card(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0, const CardType Type = CardType::Attack, const CardRarity Rarity = CardRarity::Common);
+	explicit Card(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
 
 	/** Copy Constructor */
 	Card(const Card& other);
 
 	/** Destructor */
-	~Card();
+	virtual ~Card();
 
 	/** Operator = */
 	Card& operator = (const Card& other);
@@ -53,11 +41,53 @@ public:
 	/** Draw */
 	void Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale = sf::Vector2f(0.3f, 0.3f));
 
+	/** Update */
+	void Update(const sf::Vector2i& MousePosition);
+
 	/** Get string based on enum type */
-	static const std::string GetType(const CardType Type);
-	static const std::string GetRarity(const CardRarity Rarity);
+	//static const std::string GetType(const CardType Type);
+	//static const std::string GetRarity(const CardRarity Rarity);
+
+	/** Getters */		// TODO
+	inline const bool GetIsSelected() const { return IsSelected; }
 
 	/** Use Card */
-	// virtual void Use();
+	virtual void Use(Player* CurrentPlayer, Enemy* CurrentEnemy) = 0;
+};
+
+class DamageCard : public Card
+{
+private:
+	unsigned int Damage;
+
+public:
+	/** Constructor */
+	explicit DamageCard(unsigned int Damage, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
+
+	/** Copy Constructor */
+	DamageCard(const DamageCard& other);
+
+	/** Destructor */
+	~DamageCard();
+
+	void Use(Player* CurrentPlayer, Enemy* CurrentEnemy) override;
+};
+
+class ShieldCard : public Card
+{
+private:
+	unsigned int Block;
+
+public:
+	/** Constructor */
+	explicit ShieldCard(unsigned int Block, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
+
+	/** Copy Constructor */
+	ShieldCard(const ShieldCard& other);
+
+	/** Destructor */
+	~ShieldCard();
+
+	void Use(Player* CurrentPlayer, Enemy* CurrentEnemy) override;
 };
 

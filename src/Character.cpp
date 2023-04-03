@@ -5,53 +5,24 @@
 #include "Card.h"
 #include "Item.h"
 
-Character::Character(const std::string& Name, const unsigned int MaxHealth, const unsigned int MaxEnergy, const unsigned int Shield)
+///////////////////////////////////////////////////////////////////////////
+///////////////////////			Character			///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+Character::Character(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
 	: Name(Name), 
 	  MaxHealth(MaxHealth), CurrentHealth(MaxHealth),
-	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy),
 	  Shield(Shield)
 {
 	std::cout << "New Character\n";
-
-	// Cards
-	Card StrikeCard("assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 2, CardType::Attack, CardRarity::Common);
-	Card DefendCard("assets/cards/Defend.png", "Defend", "Gain 5 Block", 1, CardType::Skill, CardRarity::Common);
-	Card HemokinesisCard("assets/cards/Hemokinesis.png", "Hemokinesis", "Hemokinesis ....", 0, CardType::Curse, CardRarity::Common);
-	Card IronWaveCard("assets/cards/IronWave.png", "IronWave", "IronWave ....", 0, CardType::Skill, CardRarity::Common);
-
-	Cards.push_back(StrikeCard);
-	Cards.push_back(DefendCard);
-	Cards.push_back(HemokinesisCard);
-	Cards.push_back(IronWaveCard);
-
-	// Items
-	Item Potion("assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
-	Item BlockPotion("assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield");
-	Item EnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy");
-	Item HeartOfIronPotion("assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 10");
-
-	Items.push_back(Potion);
-	Items.push_back(BlockPotion);
-	Items.push_back(EnergyPotion);
-	Items.push_back(HeartOfIronPotion);
-
-	// Load Textures
-	if (!EnergyBackgroundTexture.loadFromFile("assets/cards/EnergyBackground.png"))
-	{
-		std::cout << "Can't load : EnergyBackground.png \n";
-	}
-
-	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
 }
 
 Character::Character(const Character& other)
 	: Name(other.Name),
 	  MaxHealth(other.MaxHealth), CurrentHealth(other.CurrentHealth),
-	  MaxEnergy(other.MaxEnergy), CurrentEnergy(other.CurrentEnergy),
-	  Shield(other.Shield),
-	  Cards(other.Cards), Items(other.Items)
+	  Shield(other.Shield)
 {
-	// TODO : EnergyBackground Texture + Sprite
+
 } 
 
 Character::~Character()
@@ -66,15 +37,7 @@ Character& Character::operator = (const Character& other)
 	MaxHealth = other.MaxHealth;
 	CurrentHealth = other.CurrentHealth;
 
-	MaxEnergy = other.MaxEnergy;
-	CurrentEnergy = other.CurrentEnergy;
-
 	Shield = other.Shield;
-
-	Cards = other.Cards;
-	Items = other.Items;
-
-	// TODO : EnergyBackground Texture + Sprite
 
 	return *this;
 }
@@ -86,15 +49,104 @@ std::ostream& operator << (std::ostream& os, const Character& c)
 	std::cout << "MaxHealth : " << c.MaxHealth << '\n';
 	std::cout << "CurrentHealth : " << c.CurrentHealth << '\n';
 
-	std::cout << "MaxEnergy : " << c.MaxEnergy << '\n';
-	std::cout << "CurrentEnergy : " << c.CurrentEnergy << '\n';
-
 	std::cout << "Shield : " << c.Shield << '\n';
 
 	return os;
 }
 
-void Character::Draw(sf::RenderWindow& Window)
+void Character::Heal(const unsigned int Amount)
+{
+	if (CurrentHealth + Amount >= MaxHealth)
+	{
+		CurrentHealth = MaxHealth;
+	}
+	else
+	{
+		CurrentHealth += Amount;
+	}
+}
+
+void Character::TakeDamage(const unsigned int Damage)
+{
+	if (CurrentHealth - Damage <= 0)
+	{
+		CurrentHealth = 0;
+	}
+	else
+	{
+		CurrentHealth -= Damage;
+	}
+}
+
+void Character::IncreaseShield(const unsigned int Amount)
+{
+	Shield += Amount;
+}
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////			Player				///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
+	: Character(Name, MaxHealth, Shield),
+	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy)
+{
+	std::cout << "New Player\n";
+
+	// Cards
+	DamageCard* StrikeCard = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
+	DamageCard* Bludgeon   = new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal damage 32 damage", 3);
+	ShieldCard* DefendCard = new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1);
+	ShieldCard* Impervious = new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 5 Block", 2);
+
+	Cards.push_back(StrikeCard);
+	Cards.push_back(Bludgeon);
+	Cards.push_back(DefendCard);
+	Cards.push_back(Impervious);
+
+	// Items
+	HealthPotion* HealthPotion10 = new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
+	BlockPotion* BlockPotion20 = new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield");
+	FullEnergyPotion* FullEnergyPotion1 = new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy");
+	MaxHealthPotion* MaxHealthPotion10 = new MaxHealthPotion(10, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 10");
+
+	Items.push_back(HealthPotion10);
+	Items.push_back(BlockPotion20);
+	Items.push_back(FullEnergyPotion1);
+	Items.push_back(MaxHealthPotion10);
+
+	// Load Textures
+	if (!EnergyBackgroundTexture.loadFromFile("assets/cards/EnergyBackground.png"))		// TODO : ResourceManager
+	{
+		std::cout << "Can't load : EnergyBackground.png \n";
+	}
+
+	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+}
+
+Player::Player(const Player& other)
+	: Character(other),
+	  MaxEnergy(other.MaxEnergy), CurrentEnergy(other.CurrentEnergy),
+	  Cards(other.Cards), Items(other.Items)
+{
+	// TODO : restul
+}
+
+/** Destructor */
+Player::~Player()
+{
+	for (unsigned int i = 0; i < Items.size(); i++)
+	{
+		delete Items[i];
+	}
+
+	for (unsigned int i = 0; i < Cards.size(); i++)
+	{
+		delete Cards[i];
+	}
+}
+
+void Player::Draw(sf::RenderWindow& Window)
 {
 	// Load Font
 	sf::Font Font;
@@ -163,64 +215,166 @@ void Character::Draw(sf::RenderWindow& Window)
 	// Draw Items
 	for (unsigned int i = 0; i < Items.size() && i < 4; i++)	// TODO : change
 	{
-		Items[i].Draw(Window, ItemPosition[i]);
+		Items[i]->Draw(Window, ItemPosition[i]);
 	}
 
 	// Draw Cards
 	for (unsigned int i = 0; i < Cards.size() && i < 5; i++)
 	{
-		Cards[i].Draw(Window, CardPosition[i]);
+		Cards[i]->Draw(Window, CardPosition[i]);
 	}
 }
 
-void Character::AddCard(const Card& NewCard)
+void Player::Update(const sf::Vector2i& MousePosition)
 {
-	Cards.push_back(NewCard);
-}
-
-void Character::AddItem(const Item& NewItem)
-{
-	Items.push_back(NewItem);
-}
-
-void Character::PrintCards() const
-{
-	for (const Card& c : Cards)
+	// Update Cards
+	for (Card* const c : Cards)
 	{
-		std::cout << c << '\n';
+		c->Update(MousePosition);
 	}
-}
-
-void Character::PrintItems() const
-{
-	for (const Item& i : Items)
+	
+	// Update Items
+	for (Item* const i : Items)
 	{
-		std::cout << i << '\n';
+		i->Update(MousePosition);
 	}
 }
 
-void Character::IncreaseMaxHealth(const unsigned int Amount)
+void Player::Select()
+{
+	// Check Cards
+	for (unsigned int i = 0; i < Cards.size(); i++)
+	{
+		if (Cards[i]->GetIsSelected())
+		{
+			Cards[i]->Use(this, CurrentEnemy);
+			delete Cards[i];
+			Cards.erase(Cards.begin() + i);
+		}
+	}
+
+	// Check Items
+	for (unsigned int i = 0; i < Items.size(); i++)
+	{
+		if (Items[i]->GetIsSelected())
+		{
+			Items[i]->Use(this);
+			delete Items[i];
+			Items.erase(Items.begin() + i);
+		}
+	}
+}
+
+void Player::IncreaseMaxHealth(const unsigned int Amount)
 {
 	MaxHealth += Amount;
 }
 
-void Character::Heal(const unsigned int Amount)
+void Player::RegenerateFullEnergy()
 {
-	CurrentHealth += Amount;
+	CurrentEnergy = MaxEnergy;
 }
 
-void Character::TakeDamage(const unsigned int Damage)
+void Player::RegenerateEnergy(const unsigned int Amount)
 {
-	CurrentHealth -= Damage;
+	if (CurrentEnergy + Amount >= MaxEnergy)
+	{
+		CurrentEnergy = MaxEnergy;
+	}
+	else
+	{
+		CurrentEnergy = MaxEnergy;
+	}
 }
 
-void Character::ConsumeEnergy(const unsigned int Amount)
+void Player::ConsumeEnergy(const unsigned int Amount)
 {
-	CurrentEnergy -= Amount;
+	if (CurrentEnergy - Amount < 0)
+	{
+		std::cout << "Not enough energy\n";
+	}
+	else
+	{
+		CurrentEnergy -= Amount;
+	}
 }
 
-void Character::IncreaseShield(const unsigned int Amount)
+void Player::AddCard(Card* const NewCard)
 {
-	Shield += Amount;
+	Cards.push_back(NewCard);
+}
+
+void Player::AddItem(Item* const NewItem)
+{
+	Items.push_back(NewItem);
+}
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////			Enemy				///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
+	: Character(Name, MaxHealth, Shield)
+{
+	std::cout << "New Enemy\n";
+}
+
+Enemy::Enemy(const Player& other)
+	: Character(other)
+{
+
+}
+
+Enemy::~Enemy()
+{
+	std::cout << "Destruct Enemy\n";
+}
+
+void Enemy::Draw(sf::RenderWindow& Window)
+{
+	// Load Font
+	sf::Font Font;
+	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))
+	{
+		std::cout << "Can't load font : PoppinsRegular \n";
+	}
+
+	float PositionX = 1000.0f;
+
+	// Draw Name
+	sf::Text NameText;
+	NameText.setFont(Font);
+	NameText.setString(Name);
+	NameText.setCharacterSize(24);
+	NameText.setFillColor(sf::Color::White);
+	NameText.setPosition(sf::Vector2f(PositionX, 20.0f));
+
+	Window.draw(NameText);
+
+	// Draw CurrentHealth + MaxHealth
+	sf::Text HealthText;
+	HealthText.setFont(Font);
+	HealthText.setString("Health " + std::to_string(CurrentHealth) + "/" + std::to_string(MaxHealth));
+	HealthText.setCharacterSize(24);
+	HealthText.setFillColor(sf::Color::Red);
+
+	float HealthTextPosX = PositionX;
+	float HealthTextPosY = NameText.getGlobalBounds().getPosition().y + NameText.getGlobalBounds().height + 30.0f;
+	HealthText.setPosition(sf::Vector2f(HealthTextPosX, HealthTextPosY));
+
+	Window.draw(HealthText);
+
+	// Draw Shield
+	sf::Text ShieldText;
+	ShieldText.setFont(Font);
+	ShieldText.setString("Shield " + std::to_string(Shield));
+	ShieldText.setCharacterSize(24);
+	ShieldText.setFillColor(sf::Color::Blue);
+
+	float ShieldTextPosX = PositionX;
+	float ShieldTextPosY = HealthText.getGlobalBounds().getPosition().y + HealthText.getGlobalBounds().height + 20.0f;
+	ShieldText.setPosition(sf::Vector2f(ShieldTextPosX, ShieldTextPosY));
+
+	Window.draw(ShieldText);
 }
 

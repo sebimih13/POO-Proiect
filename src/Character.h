@@ -3,46 +3,27 @@
 #include <string>
 #include <vector>
 
-#include "Card.h"
-#include "Item.h"
+#include <SFML/Graphics.hpp>
+
+/** Forward Declarations */
+class Card;
+class Item;
+class Enemy;
+class Player;
 
 class Character
 {
-private:
+protected:
 	std::string Name;
 
 	unsigned int MaxHealth;
 	unsigned int CurrentHealth;
 
-	unsigned int MaxEnergy;
-	unsigned int CurrentEnergy;
-	
 	unsigned int Shield;
-
-	std::vector<Card> Cards;
-	std::vector<Item> Items;
-
-	sf::Texture EnergyBackgroundTexture;
-	sf::Sprite EnergyBackgroundSprite;
-
-	const std::vector<sf::Vector2f> CardPosition = {
-		  sf::Vector2f(100.0f, 525.0f),
-		  sf::Vector2f(300.0f, 525.0f),
-		  sf::Vector2f(500.0f, 525.0f),
-		  sf::Vector2f(700.0f, 525.0f),
-		  sf::Vector2f(900.0f, 525.0f)
-	};
-
-	const std::vector<sf::Vector2f> ItemPosition = {
-		  sf::Vector2f(20.0f, 170.0f),
-		  sf::Vector2f(70.0f, 170.0f),
-		  sf::Vector2f(120.0f, 170.0f),
-		  sf::Vector2f(170.0f, 170.0f)
-	};
 
 public:
 	/** Constructor */
-	Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int MaxEnergy = 5, const unsigned int Shield = 0);
+	Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
 
 	/** Copy Constructor */
 	Character(const Character& other);
@@ -57,28 +38,97 @@ public:
 	friend std::ostream& operator << (std::ostream& os, const Character& c);
 
 	/** Draw */
-	void Draw(sf::RenderWindow& Window);
-
-	/** Cards/Items Funtions */
-	void AddCard(const Card& NewCard);
-	void AddItem(const Item& NewItem);
-
-	void PrintCards() const;
-	void PrintItems() const;
+	virtual void Draw(sf::RenderWindow& Window) = 0;
 
 	/** Health */
-	void IncreaseMaxHealth(const unsigned int Amount);
 	void Heal(const unsigned int Amount);
 	void TakeDamage(const unsigned int Damage);
 
-	/** Energy */
-	void ConsumeEnergy(const unsigned int Amount);
-
 	/** Shield */
 	void IncreaseShield(const unsigned int Amount);
-
-	/** Getters / Setters */
-	inline std::vector<Card>& GetCards() { return Cards; }
-	inline std::vector<Item>& GetItems() { return Items; }
 };
+
+class Player : public Character
+{
+private:
+	unsigned int MaxEnergy;
+	unsigned int CurrentEnergy;
+
+	std::vector<Card*> Cards;
+	std::vector<Item*> Items;
+
+	Enemy* CurrentEnemy;
+
+	sf::Texture EnergyBackgroundTexture;
+	sf::Sprite EnergyBackgroundSprite;
+
+	const std::vector<sf::Vector2f> CardPosition = {
+		  sf::Vector2f(80.0f, 525.0f),
+		  sf::Vector2f(300.0f, 525.0f),
+		  sf::Vector2f(520.0f, 525.0f),
+		  sf::Vector2f(740.0f, 525.0f),
+		  sf::Vector2f(960.0f, 525.0f)
+	};
+
+	const std::vector<sf::Vector2f> ItemPosition = {
+		  sf::Vector2f(20.0f, 170.0f),
+		  sf::Vector2f(70.0f, 170.0f),
+		  sf::Vector2f(120.0f, 170.0f),
+		  sf::Vector2f(170.0f, 170.0f)
+	};
+
+public:
+	/** Constructor */
+	Player(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0, const unsigned int MaxEnergy = 5);
+
+	/** Copy Constructor */
+	Player(const Player& other);
+
+	/** Destructor */
+	~Player();
+
+	/** Draw */
+	void Draw(sf::RenderWindow& Window) override;
+
+	/** Update */
+	void Update(const sf::Vector2i& MousePosition);
+
+	/** Select card/item */
+	void Select();
+
+	/** Health */
+	void IncreaseMaxHealth(const unsigned int Amount);
+
+	/** Energy */
+	void RegenerateFullEnergy();
+	void RegenerateEnergy(const unsigned int Amount);
+	void ConsumeEnergy(const unsigned int Amount);
+
+	/** Cards/Items Funtions */
+	void AddCard(Card* const NewCard);
+	void AddItem(Item* const NewItem);
+
+	/** Setters */
+	inline void SetCurrentEnemy(Enemy* const NewEnemy) { CurrentEnemy = NewEnemy; }
+};
+
+class Enemy : public Character
+{
+private:
+	// TODO
+
+public:
+	/** Constructor */
+	Enemy(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
+
+	/** Copy Constructor */
+	Enemy(const Player& other);
+
+	/** Destructor */
+	~Enemy();
+
+	/** Draw */
+	void Draw(sf::RenderWindow& Window) override;
+};
+
 

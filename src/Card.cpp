@@ -2,10 +2,16 @@
 
 #include <iostream>
 
-Card::Card(const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost, const CardType Type, const CardRarity Rarity)
+#include "Character.h"
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////				Card			///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+Card::Card(const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
 	: FilePath(FilePath), Name(Name), Description(Description),
 	  EnergyCost(EnergyCost),
-	  Type(Type), Rarity(Rarity)
+	  IsSelected(false)
 {
 	std::cout << "New Card\n";
 
@@ -13,13 +19,15 @@ Card::Card(const std::string& FilePath, const std::string& Name, const std::stri
 	{
 		std::cout << "Failed to load : " << FilePath << '\n';
 	}
+
+	Sprite.setTexture(Texture);
 }
 
 Card::Card(const Card& Other)
 	: FilePath(Other.FilePath), Name(Other.Name), Description(Other.Description),
 	  EnergyCost(Other.EnergyCost),
-	  Type(Other.Type), Rarity(Other.Rarity),
-	  Texture(Other.Texture), Sprite(Other.Sprite)
+	  Texture(Other.Texture), Sprite(Other.Sprite),
+	  IsSelected(Other.IsSelected)
 {
 
 }
@@ -37,24 +45,21 @@ Card& Card::operator = (const Card& Other)
 
 	EnergyCost = Other.EnergyCost;
 
-	Type = Other.Type;
-	Rarity = Other.Rarity;
-
 	Texture = Other.Texture;
 	Sprite = Other.Sprite;
+
+	IsSelected = Other.IsSelected;
 
 	return *this;
 }
 
 std::ostream& operator << (std::ostream& os, const Card& c)
 {
+	os << "FilePath : " << c.FilePath << '\n';
 	os << "Name : " << c.Name << '\n';
 	os << "Description : " << c.Description << '\n';
 
 	os << "Energy : " << c.EnergyCost << '\n';
-
-	os << "Type : " << Card::GetType(c.Type) << '\n';
-	os << "Rarity : " << Card::GetRarity(c.Rarity) << '\n';
 
 	return os;
 }
@@ -64,29 +69,98 @@ void Card::Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf
 	Sprite.setTexture(Texture);
 	Sprite.setPosition(Position);
 	Sprite.setScale(Scale);
+
+	// Select Box
+	if (IsSelected)
+	{
+		float BoxPosX = Sprite.getGlobalBounds().getPosition().x;
+		float BoxPosY = Sprite.getGlobalBounds().getPosition().y;
+
+		float BoxSizeX = Sprite.getGlobalBounds().width;
+		float BoxSizeY = Sprite.getGlobalBounds().height;
+
+		sf::RectangleShape Box;
+		Box.setPosition(sf::Vector2f(BoxPosX, BoxPosY));
+		Box.setSize(sf::Vector2f(BoxSizeX, BoxSizeY));
+		Box.setFillColor(sf::Color::Transparent);
+		Box.setOutlineColor(sf::Color::Yellow);
+		Box.setOutlineThickness(3.0f);
+		
+		Window.draw(Box);
+	}
+
 	Window.draw(Sprite);
 }
 
-const std::string Card::GetType(const CardType Type)
+void Card::Update(const sf::Vector2i& MousePosition)
 {
-	switch (Type)
+	// Check if this card is selected
+	if (Sprite.getGlobalBounds().getPosition().x <= float(MousePosition.x) && float(MousePosition.x) <= Sprite.getGlobalBounds().getPosition().x + Sprite.getGlobalBounds().width &&
+		Sprite.getGlobalBounds().getPosition().y <= float(MousePosition.y) && float(MousePosition.y) <= Sprite.getGlobalBounds().getPosition().y + Sprite.getGlobalBounds().height)
 	{
-		case CardType::Attack:	return "Attack";	break;
-		case CardType::Curse:	return "Curse";		break;
-		case CardType::Skill:	return "Skill";		break;
-		default:				return "None";		break;
+		IsSelected = true;
+	}
+	else
+	{
+		IsSelected = false;
 	}
 }
 
-const std::string Card::GetRarity(const CardRarity Rarity)
+///////////////////////////////////////////////////////////////////////////
+///////////////////////			DamageCard			///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+DamageCard::DamageCard(unsigned int Damage, const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
+	: Card(FilePath, Name, Description, EnergyCost),
+	  Damage(Damage)
 {
-	switch (Rarity)
-	{
-		case CardRarity::Common:	return "Common";	break;
-		case CardRarity::Uncommon:	return "Uncommon";	break;
-		case CardRarity::Rare:		return "Rare";		break;
-		case CardRarity::Special:	return "Special";	break;
-		default:					return "None";		break;
-	}
+	std::cout << "New DamageCard\n";
+}
+
+DamageCard::DamageCard(const DamageCard& other)
+	: Card(other),
+	  Damage(other.Damage)
+{
+
+}
+
+DamageCard::~DamageCard()
+{
+	std::cout << "Destructor DamageCard\n";
+}
+
+void DamageCard::Use(Player* CurrentPlayer, Enemy* CurrentEnemy)
+{
+	// TODO : exceptie -> folosita doar pt clasa Enemy
+	CurrentEnemy->TakeDamage(Damage);
+}
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////			ShieldCard			///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+ShieldCard::ShieldCard(unsigned int Block, const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
+	: Card(FilePath, Name, Description, EnergyCost),
+	  Block(Block)
+{
+	std::cout << "New ShieldCard\n";
+}
+
+ShieldCard::ShieldCard(const ShieldCard& other)
+	: Card(other),
+	  Block(other.Block)
+{
+
+}
+
+ShieldCard::~ShieldCard()
+{
+	std::cout << "Destructor ShieldCard\n";
+}
+
+void ShieldCard::Use(Player* CurrentPlayer, Enemy* CurrentEnemy)
+{
+	// TODO : exceptie -> folosita doar pt clasa Player
+	CurrentPlayer->IncreaseShield(Block);
 }
 

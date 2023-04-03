@@ -11,7 +11,7 @@
 #include <X11/Xlib.h>
 #endif
 
-int main() 
+int main()
 {
     #ifdef __linux__
     XInitThreads();
@@ -24,43 +24,29 @@ int main()
     //window.setFramerateLimit(60);
 
 
-    std::cout << "Hello, world!\n\n";
-
     // Player
-    Character Player = Character("Eu");
-    std::cout << Player << '\n';
-
-    // Print Cards + Items
-    Player.PrintCards();
-    Player.PrintItems();
-
-    // New Cards
-    Card NewCard("assets/cards/Strike.png");
-    Player.AddCard(NewCard);
-
-    // New Items
-    Item NewItem("assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
-    Player.AddItem(NewItem);
-
-    // Print Cards + Items
-    Player.PrintCards();
-    Player.PrintItems();
+    Player* Player1 = new Player("Eu");
+    std::cout << *Player1 << '\n';
 
     // Change stats
-    Player.IncreaseMaxHealth(10);
-    Player.Heal(10);
-    Player.TakeDamage(20);
-
-    Player.ConsumeEnergy(1);
-
-    Player.IncreaseShield(15);
+    Player1->IncreaseMaxHealth(10);
+    Player1->Heal(10);
+    Player1->TakeDamage(20);
+    Player1->ConsumeEnergy(3);
+    Player1->IncreaseShield(15);
 
     // Print new stats
-    std::cout << Player << '\n';
+    std::cout << *Player1 << '\n';
+
+    // Enemy
+    Enemy* Enemy1 = new Enemy("El");
+
+    Player1->SetCurrentEnemy(Enemy1);
 
 
     while (window.isOpen())
     {
+        // Input
         sf::Event e;
         while (window.pollEvent(e))
         {
@@ -79,27 +65,43 @@ int main()
                 std::cout << "Received key " << (e.key.code == sf::Keyboard::X ? "X" : "(other)") << "\n";
                 break;
 
+            case sf::Event::MouseButtonPressed:
+                if (e.mouseButton.button == sf::Mouse::Left)
+                {
+                    std::cout << "LEFT Mouse Button Pressed \n";
+
+                    // Check Items + Cards
+                    Player1->Select();
+                }
+
+                break;
+
             default:
                 break;
             }
         }
 
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(300ms);
+        // Update
+        Player1->Update(sf::Mouse::getPosition(window));
+
+        //using namespace std::chrono_literals;
+        //std::this_thread::sleep_for(300ms);
 
         window.clear();
 
         // Draw Scene
 
         // Draw Player
-        Player.Draw(window);
+        Player1->Draw(window);
 
-        // TODO : Draw Enemy
-
+        // Draw Enemy
+        Enemy1->Draw(window);
        
-
         window.display();
     }
+
+    delete Player1;
+    delete Enemy1;
 
     return 0;
 }
