@@ -29,7 +29,7 @@ public:
 	Character(const Character& other);
 
 	/** Destructor */
-	~Character();
+	virtual ~Character();
 
 	/** Operator = */
 	Character& operator = (const Character& other);

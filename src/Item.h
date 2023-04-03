@@ -45,7 +45,7 @@ public:
 	virtual void Use(Player* Owner) = 0;
 
 	/** Getters */
-	inline const bool GetIsSelected() const { return IsSelected; }
+	inline bool GetIsSelected() const { return IsSelected; }
 };
 
 class HealthPotion : public Item

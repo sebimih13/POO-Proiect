@@ -68,7 +68,7 @@ void Character::Heal(const unsigned int Amount)
 
 void Character::TakeDamage(const unsigned int Damage)
 {
-	if (CurrentHealth - Damage <= 0)
+	if (int(CurrentHealth) - int(Damage) <= 0)
 	{
 		CurrentHealth = 0;
 	}
@@ -89,31 +89,10 @@ void Character::IncreaseShield(const unsigned int Amount)
 
 Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
 	: Character(Name, MaxHealth, Shield),
-	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy)
+	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy),
+	  CurrentEnemy(nullptr)
 {
 	std::cout << "New Player\n";
-
-	// Cards
-	DamageCard* StrikeCard = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
-	DamageCard* Bludgeon   = new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal damage 32 damage", 3);
-	ShieldCard* DefendCard = new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1);
-	ShieldCard* Impervious = new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 5 Block", 2);
-
-	Cards.push_back(StrikeCard);
-	Cards.push_back(Bludgeon);
-	Cards.push_back(DefendCard);
-	Cards.push_back(Impervious);
-
-	// Items
-	HealthPotion* HealthPotion10 = new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
-	BlockPotion* BlockPotion20 = new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield");
-	FullEnergyPotion* FullEnergyPotion1 = new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy");
-	MaxHealthPotion* MaxHealthPotion10 = new MaxHealthPotion(10, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 10");
-
-	Items.push_back(HealthPotion10);
-	Items.push_back(BlockPotion20);
-	Items.push_back(FullEnergyPotion1);
-	Items.push_back(MaxHealthPotion10);
 
 	// Load Textures
 	if (!EnergyBackgroundTexture.loadFromFile("assets/cards/EnergyBackground.png"))		// TODO : ResourceManager
@@ -127,9 +106,11 @@ Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsi
 Player::Player(const Player& other)
 	: Character(other),
 	  MaxEnergy(other.MaxEnergy), CurrentEnergy(other.CurrentEnergy),
-	  Cards(other.Cards), Items(other.Items)
+	  Cards(other.Cards), Items(other.Items),
+	  CurrentEnemy(other.CurrentEnemy),
+	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
-	// TODO : restul
+	
 }
 
 /** Destructor */
@@ -289,7 +270,7 @@ void Player::RegenerateEnergy(const unsigned int Amount)
 
 void Player::ConsumeEnergy(const unsigned int Amount)
 {
-	if (CurrentEnergy - Amount < 0)
+	if (int(CurrentEnergy) - int(Amount) < 0)
 	{
 		std::cout << "Not enough energy\n";
 	}

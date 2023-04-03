@@ -6,6 +6,8 @@
 #include <thread>
 
 #include "src/Character.h"
+#include "src/Card.h"
+#include "src/Item.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -34,6 +36,30 @@ int main()
     Player1->TakeDamage(20);
     Player1->ConsumeEnergy(3);
     Player1->IncreaseShield(15);
+
+    Player1->RegenerateEnergy(1);
+    
+    // Cards
+    DamageCard* StrikeCard = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
+    DamageCard* Bludgeon = new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal damage 32 damage", 3);
+    ShieldCard* DefendCard = new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1);
+    ShieldCard* Impervious = new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 5 Block", 2);
+
+    Player1->AddCard(StrikeCard);
+    Player1->AddCard(Bludgeon);
+    Player1->AddCard(DefendCard);
+    Player1->AddCard(Impervious);
+
+    // Items
+    HealthPotion* HealthPotion10 = new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
+    BlockPotion* BlockPotion20 = new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield");
+    FullEnergyPotion* FullEnergyPotion1 = new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy");
+    MaxHealthPotion* MaxHealthPotion10 = new MaxHealthPotion(10, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 10");
+
+    Player1->AddItem(HealthPotion10);
+    Player1->AddItem(BlockPotion20);
+    Player1->AddItem(FullEnergyPotion1);
+    Player1->AddItem(MaxHealthPotion10);
 
     // Print new stats
     std::cout << *Player1 << '\n';

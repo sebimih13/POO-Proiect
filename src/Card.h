@@ -44,15 +44,15 @@ public:
 	/** Update */
 	void Update(const sf::Vector2i& MousePosition);
 
+	/** Use Card */
+	virtual void Use(Player* CurrentPlayer, Enemy* CurrentEnemy) = 0;
+
+	/** Getters */		// TODO
+	inline bool GetIsSelected() const { return IsSelected; }
+
 	/** Get string based on enum type */
 	//static const std::string GetType(const CardType Type);
 	//static const std::string GetRarity(const CardRarity Rarity);
-
-	/** Getters */		// TODO
-	inline const bool GetIsSelected() const { return IsSelected; }
-
-	/** Use Card */
-	virtual void Use(Player* CurrentPlayer, Enemy* CurrentEnemy) = 0;
 };
 
 class DamageCard : public Card
