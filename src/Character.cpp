@@ -106,8 +106,8 @@ Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsi
 Player::Player(const Player& other)
 	: Character(other),
 	  MaxEnergy(other.MaxEnergy), CurrentEnergy(other.CurrentEnergy),
-	  Cards(other.Cards), Items(other.Items),
 	  CurrentEnemy(other.CurrentEnemy),
+	  Cards(other.Cards), Items(other.Items),
 	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
 	
@@ -226,9 +226,30 @@ void Player::Select()
 	// Check Cards
 	for (unsigned int i = 0; i < Cards.size(); i++)
 	{
-		if (Cards[i]->GetIsSelected())
+		if (Cards[i]->GetIsSelected() && CurrentEnergy >= Cards[i]->GetEnergy())
 		{
-			Cards[i]->Use(this, CurrentEnemy);
+			// Dynamic Cast
+			if (DamageCard* Card = dynamic_cast<DamageCard*>(Cards[i])) 
+			{
+				std::cout << "DamageCard : cast pointer reusit\n";
+				Card->Use(CurrentEnemy);
+			}
+			else
+			{
+				std::cout << "DamageCard : cast pointer nereusit\n";
+			}
+
+			if (ShieldCard* Card = dynamic_cast<ShieldCard*>(Cards[i]))
+			{
+				std::cout << "ShieldCard : cast pointer reusit\n";
+				Card->Use(this);
+			}
+			else
+			{
+				std::cout << "ShieldCard : cast pointer nereusit\n";
+			}
+
+			ConsumeEnergy(Cards[i]->GetEnergy());
 			delete Cards[i];
 			Cards.erase(Cards.begin() + i);
 		}
@@ -264,7 +285,7 @@ void Player::RegenerateEnergy(const unsigned int Amount)
 	}
 	else
 	{
-		CurrentEnergy = MaxEnergy;
+		CurrentEnergy += Amount;
 	}
 }
 
@@ -272,7 +293,7 @@ void Player::ConsumeEnergy(const unsigned int Amount)
 {
 	if (int(CurrentEnergy) - int(Amount) < 0)
 	{
-		std::cout << "Not enough energy\n";
+		std::cout << "Not enough energy\n";	// TODO : delete
 	}
 	else
 	{
@@ -320,15 +341,13 @@ void Enemy::Draw(sf::RenderWindow& Window)
 		std::cout << "Can't load font : PoppinsRegular \n";
 	}
 
-	float PositionX = 1000.0f;
-
 	// Draw Name
 	sf::Text NameText;
 	NameText.setFont(Font);
 	NameText.setString(Name);
 	NameText.setCharacterSize(24);
 	NameText.setFillColor(sf::Color::White);
-	NameText.setPosition(sf::Vector2f(PositionX, 20.0f));
+	NameText.setPosition(sf::Vector2f(1000.0f, 20.0f));
 
 	Window.draw(NameText);
 
@@ -339,7 +358,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 	HealthText.setCharacterSize(24);
 	HealthText.setFillColor(sf::Color::Red);
 
-	float HealthTextPosX = PositionX;
+	float HealthTextPosX = 1000.0f;
 	float HealthTextPosY = NameText.getGlobalBounds().getPosition().y + NameText.getGlobalBounds().height + 30.0f;
 	HealthText.setPosition(sf::Vector2f(HealthTextPosX, HealthTextPosY));
 
@@ -352,7 +371,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 	ShieldText.setCharacterSize(24);
 	ShieldText.setFillColor(sf::Color::Blue);
 
-	float ShieldTextPosX = PositionX;
+	float ShieldTextPosX = 1000.0f;
 	float ShieldTextPosY = HealthText.getGlobalBounds().getPosition().y + HealthText.getGlobalBounds().height + 20.0f;
 	ShieldText.setPosition(sf::Vector2f(ShieldTextPosX, ShieldTextPosY));
 

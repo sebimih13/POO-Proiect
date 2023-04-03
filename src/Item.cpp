@@ -24,8 +24,8 @@ Item::Item(const std::string& FilePath, const std::string& Name, const std::stri
 
 Item::Item(const Item& other)
 	: FilePath(other.FilePath), Name(other.Name), Description(other.Description),
-	  Texture(other.Texture), Sprite(other.Sprite),
-	  IsSelected(other.IsSelected)
+	  IsSelected(other.IsSelected),
+	  Texture(other.Texture), Sprite(other.Sprite)
 {
 
 }
@@ -41,10 +41,10 @@ Item& Item::operator = (const Item& other)
 	Name = other.Name;
 	Description = other.Description;
 
+	IsSelected = other.IsSelected;
+
 	Texture = other.Texture;
 	Sprite = other.Sprite;
-
-	IsSelected = other.IsSelected;
 
 	return *this;
 }
@@ -110,7 +110,8 @@ void Item::Update(const sf::Vector2i& MousePosition)
 ///////////////////////////////////////////////////////////////////////////
 
 HealthPotion::HealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: HP(HP), Item(FilePath, Name, Description) 
+	: Item(FilePath, Name, Description),
+	  HP(HP)
 {
 	std::cout << "New HealthPotion\n";
 }
@@ -130,7 +131,8 @@ void HealthPotion::Use(Player* Owner)
 ///////////////////////////////////////////////////////////////////////////
 
 BlockPotion::BlockPotion(const unsigned int Block, const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: Block(Block), Item(FilePath, Name, Description)
+	: Item(FilePath, Name, Description),
+	  Block(Block)
 {
 	std::cout << "New BlockPotion\n";
 }
@@ -170,7 +172,8 @@ void FullEnergyPotion::Use(Player* Owner)
 ///////////////////////////////////////////////////////////////////////////
 
 MaxHealthPotion::MaxHealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: HP(HP), Item(FilePath, Name, Description)
+	: Item(FilePath, Name, Description), 
+	  HP(HP)
 {
 	std::cout << "New MaxHealthPotion\n";
 }

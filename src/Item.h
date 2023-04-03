@@ -14,17 +14,17 @@ private:
 	std::string Name;
 	std::string Description;
 
+	bool IsSelected;
+
 	sf::Texture Texture;
 	sf::Sprite Sprite;
-
-	bool IsSelected;
 
 public:
 	/** Constructor */
 	explicit Item(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
-	Item(const Item& other);
+	explicit Item(const Item& other);
 
 	/** Destructor */
 	virtual ~Item();
@@ -60,6 +60,8 @@ public:
 	/** Destructor */
 	~HealthPotion() override;
 
+	// TODO : overload operators
+
 	/** Use Item */
 	void Use(Player* Owner) override;
 };
@@ -76,6 +78,8 @@ public:
 	/** Destructor */
 	~BlockPotion() override;
 
+	// TODO : overload operators
+
 	/** Use Item */
 	void Use(Player* Owner) override;
 };
@@ -88,6 +92,8 @@ public:
 
 	/** Destructor */
 	~FullEnergyPotion() override;
+
+	// TODO : overload operators
 
 	/** Use Item */
 	void Use(Player* Owner) override;
@@ -104,6 +110,8 @@ public:
 
 	/** Destructor */
 	~MaxHealthPotion() override;
+
+	// TODO : overload operators
 
 	/** Use Item */
 	void Use(Player* Owner) override;

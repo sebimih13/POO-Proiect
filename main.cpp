@@ -31,12 +31,7 @@ int main()
     std::cout << *Player1 << '\n';
 
     // Change stats
-    Player1->IncreaseMaxHealth(10);
-    Player1->Heal(10);
-    Player1->TakeDamage(20);
-    Player1->ConsumeEnergy(3);
-    Player1->IncreaseShield(15);
-
+    Player1->ConsumeEnergy(4);
     Player1->RegenerateEnergy(1);
     
     // Cards

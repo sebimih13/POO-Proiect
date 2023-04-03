@@ -16,17 +16,15 @@ class Character
 protected:
 	std::string Name;
 
-	unsigned int MaxHealth;
-	unsigned int CurrentHealth;
-
+	unsigned int MaxHealth, CurrentHealth;
 	unsigned int Shield;
 
 public:
 	/** Constructor */
-	Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
+	explicit Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
 
 	/** Copy Constructor */
-	Character(const Character& other);
+	explicit Character(const Character& other);
 
 	/** Destructor */
 	virtual ~Character();
@@ -51,13 +49,12 @@ public:
 class Player : public Character
 {
 private:
-	unsigned int MaxEnergy;
-	unsigned int CurrentEnergy;
+	unsigned int MaxEnergy, CurrentEnergy;
+
+	Enemy* CurrentEnemy;
 
 	std::vector<Card*> Cards;
 	std::vector<Item*> Items;
-
-	Enemy* CurrentEnemy;
 
 	sf::Texture EnergyBackgroundTexture;
 	sf::Sprite EnergyBackgroundSprite;
@@ -79,13 +76,15 @@ private:
 
 public:
 	/** Constructor */
-	Player(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0, const unsigned int MaxEnergy = 5);
+	explicit Player(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0, const unsigned int MaxEnergy = 5);
 
 	/** Copy Constructor */
-	Player(const Player& other);
+	explicit Player(const Player& other);
 
 	/** Destructor */
 	~Player();
+
+	// TODO : overload operators
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window) override;
@@ -119,13 +118,15 @@ private:
 
 public:
 	/** Constructor */
-	Enemy(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
+	explicit Enemy(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
 
 	/** Copy Constructor */
-	Enemy(const Player& other);
+	explicit Enemy(const Player& other);
 
 	/** Destructor */
 	~Enemy();
+
+	// TODO : overload operators
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window) override;

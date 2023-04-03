@@ -26,8 +26,8 @@ Card::Card(const std::string& FilePath, const std::string& Name, const std::stri
 Card::Card(const Card& Other)
 	: FilePath(Other.FilePath), Name(Other.Name), Description(Other.Description),
 	  EnergyCost(Other.EnergyCost),
-	  Texture(Other.Texture), Sprite(Other.Sprite),
-	  IsSelected(Other.IsSelected)
+	  IsSelected(Other.IsSelected),
+	  Texture(Other.Texture), Sprite(Other.Sprite)
 {
 
 }
@@ -45,10 +45,10 @@ Card& Card::operator = (const Card& Other)
 
 	EnergyCost = Other.EnergyCost;
 
+	IsSelected = Other.IsSelected;
+
 	Texture = Other.Texture;
 	Sprite = Other.Sprite;
-
-	IsSelected = Other.IsSelected;
 
 	return *this;
 }
@@ -129,7 +129,7 @@ DamageCard::~DamageCard()
 	std::cout << "Destructor DamageCard\n";
 }
 
-void DamageCard::Use(Player* CurrentPlayer, Enemy* CurrentEnemy)
+void DamageCard::Use(Enemy* CurrentEnemy)
 {
 	// TODO : exceptie -> folosita doar pt clasa Enemy
 	CurrentEnemy->TakeDamage(Damage);
@@ -158,7 +158,7 @@ ShieldCard::~ShieldCard()
 	std::cout << "Destructor ShieldCard\n";
 }
 
-void ShieldCard::Use(Player* CurrentPlayer, Enemy* CurrentEnemy)
+void ShieldCard::Use(Player* CurrentPlayer)
 {
 	// TODO : exceptie -> folosita doar pt clasa Player
 	CurrentPlayer->IncreaseShield(Block);
