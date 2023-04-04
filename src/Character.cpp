@@ -40,6 +40,9 @@ Character& Character::operator = (const Character& other)
 
 	Shield = other.Shield;
 
+	CharacterTexture = other.CharacterTexture;
+	CharacterSprite = other.CharacterSprite;
+
 	return *this;
 }
 

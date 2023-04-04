@@ -33,30 +33,20 @@ int main()
     // Change stats
     Player1->ConsumeEnergy(4);
     Player1->RegenerateEnergy(1);
+    Player1->TakeDamage(20);
     
     // Cards
-    DamageCard* StrikeCard = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
-    DamageCard* StrikeCard2 = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
-    DamageCard* Bludgeon = new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal damage 32 damage", 3);
-    ShieldCard* DefendCard = new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1);
-    ShieldCard* Impervious = new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 5 Block", 2);
-
-    Player1->AddCard(StrikeCard);
-    Player1->AddCard(StrikeCard2);
-    Player1->AddCard(Bludgeon);
-    Player1->AddCard(DefendCard);
-    Player1->AddCard(Impervious);
+    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
+    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
+    Player1->AddCard(new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
+    Player1->AddCard(new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
+    Player1->AddCard(new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
 
     // Items
-    HealthPotion* HealthPotion10 = new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 20 HP");
-    BlockPotion* BlockPotion20 = new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield");
-    FullEnergyPotion* FullEnergyPotion1 = new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy");
-    MaxHealthPotion* MaxHealthPotion10 = new MaxHealthPotion(10, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 10");
-
-    Player1->AddItem(HealthPotion10);
-    Player1->AddItem(BlockPotion20);
-    Player1->AddItem(FullEnergyPotion1);
-    Player1->AddItem(MaxHealthPotion10);
+    Player1->AddItem(new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
+    Player1->AddItem(new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
+    Player1->AddItem(new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
+    Player1->AddItem(new MaxHealthPotion(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
 
     // Print new stats
     std::cout << *Player1 << '\n';
@@ -65,6 +55,7 @@ int main()
     Enemy* Enemy1 = new Enemy("El");
 
     Player1->SetCurrentEnemy(Enemy1);
+
 
     // TODO : End Turn Button
     sf::Texture EndTurnTexture;
@@ -121,7 +112,6 @@ int main()
                     // Check Items + Cards
                     Player1->Select();
                 }
-
                 break;
 
             default:

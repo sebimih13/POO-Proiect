@@ -135,4 +135,3 @@ public:
 	void Draw(sf::RenderWindow& Window) override;
 };
 
-
