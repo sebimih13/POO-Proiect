@@ -36,11 +36,13 @@ int main()
     
     // Cards
     DamageCard* StrikeCard = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
+    DamageCard* StrikeCard2 = new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal damage 10 damage", 1);
     DamageCard* Bludgeon = new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal damage 32 damage", 3);
     ShieldCard* DefendCard = new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1);
     ShieldCard* Impervious = new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 5 Block", 2);
 
     Player1->AddCard(StrikeCard);
+    Player1->AddCard(StrikeCard2);
     Player1->AddCard(Bludgeon);
     Player1->AddCard(DefendCard);
     Player1->AddCard(Impervious);
@@ -63,6 +65,31 @@ int main()
     Enemy* Enemy1 = new Enemy("El");
 
     Player1->SetCurrentEnemy(Enemy1);
+
+    // TODO : End Turn Button
+    sf::Texture EndTurnTexture;
+    if (!EndTurnTexture.loadFromFile("assets/others/EndTurn.png"))     // TODO : ResourceManager
+    {
+        std::cout << "Can't load : assets/others/EndTurn.png";
+    }
+    
+    sf::Sprite EndTurnSprite;
+    EndTurnSprite.setTexture(EndTurnTexture);
+
+    float EndTurnSpriteX = 1200.0f / 2.0f - EndTurnTexture.getSize().x / 2.0f;
+    EndTurnSprite.setPosition(sf::Vector2f(EndTurnSpriteX, 10.0f));
+
+    // TODO : Background
+    sf::Texture BackgroundTexture;
+    if (!BackgroundTexture.loadFromFile("assets/others/Background1.png"))
+    {
+        std::cout << "Can't load : assets/others/Background2.png";
+    }
+
+    sf::Sprite BackgroundSprite;
+    BackgroundSprite.setTexture(BackgroundTexture);
+    BackgroundSprite.setPosition(sf::Vector2f(0.0f, 0.0f));
+
 
 
     while (window.isOpen())
@@ -111,6 +138,12 @@ int main()
         window.clear();
 
         // Draw Scene
+
+        // Draw Background
+        window.draw(BackgroundSprite);
+
+        // Draw Buttons
+        window.draw(EndTurnSprite);
 
         // Draw Player
         Player1->Draw(window);

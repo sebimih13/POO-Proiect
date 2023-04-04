@@ -20,7 +20,8 @@ Character::Character(const std::string& Name, const unsigned int MaxHealth, cons
 Character::Character(const Character& other)
 	: Name(other.Name),
 	  MaxHealth(other.MaxHealth), CurrentHealth(other.CurrentHealth),
-	  Shield(other.Shield)
+	  Shield(other.Shield),
+	  CharacterTexture(CharacterTexture), CharacterSprite(CharacterSprite)
 {
 
 } 
@@ -95,12 +96,20 @@ Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsi
 	std::cout << "New Player\n";
 
 	// Load Textures
-	if (!EnergyBackgroundTexture.loadFromFile("assets/cards/EnergyBackground.png"))		// TODO : ResourceManager
+	if (!EnergyBackgroundTexture.loadFromFile("assets/others/EnergyBackground.png"))		// TODO : ResourceManager
 	{
 		std::cout << "Can't load : EnergyBackground.png \n";
 	}
 
 	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+
+	if (!CharacterTexture.loadFromFile("assets/characters/Ironclad.png"))      // TODO : Resource Manager
+	{
+		std::cout << "Can't load : assets/characters/Ironclad.png";
+	}
+
+	CharacterSprite.setTexture(CharacterTexture);
+	CharacterSprite.setPosition(sf::Vector2f(150.0f, 280.0f));
 }
 
 Player::Player(const Player& other)
@@ -135,6 +144,9 @@ void Player::Draw(sf::RenderWindow& Window)
 	{
 		std::cout << "Can't load font : PoppinsRegular \n";
 	}
+
+	// Draw Sprite
+	Window.draw(CharacterSprite);
 
 	// Draw Name
 	sf::Text NameText;
@@ -226,7 +238,7 @@ void Player::Select()
 	// Check Cards
 	for (unsigned int i = 0; i < Cards.size(); i++)
 	{
-		if (Cards[i]->GetIsSelected() && CurrentEnergy >= Cards[i]->GetEnergy())
+		if (Cards[i]->GetIsSelected() && CurrentEnergy >= Cards[i]->GetEnergy())	// TODO : functie separata pt: CurrentEnergy >= Cards[i]->GetEnergy()
 		{
 			// Dynamic Cast
 			if (DamageCard* Card = dynamic_cast<DamageCard*>(Cards[i])) 
@@ -319,6 +331,15 @@ Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsign
 	: Character(Name, MaxHealth, Shield)
 {
 	std::cout << "New Enemy\n";
+
+	// Load Textures
+	if (!CharacterTexture.loadFromFile("assets/characters/GremlinLeader.png"))  // TODO : Resource Manager
+	{
+		std::cout << "Can't load : assets/characters/GremlinLeader.png";
+	}
+
+	CharacterSprite.setTexture(CharacterTexture);
+	CharacterSprite.setPosition(sf::Vector2f(650.0f, 250.0f));
 }
 
 Enemy::Enemy(const Player& other)
@@ -340,6 +361,9 @@ void Enemy::Draw(sf::RenderWindow& Window)
 	{
 		std::cout << "Can't load font : PoppinsRegular \n";
 	}
+
+	// Draw Sprite
+	Window.draw(CharacterSprite);
 
 	// Draw Name
 	sf::Text NameText;

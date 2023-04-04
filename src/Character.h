@@ -19,6 +19,9 @@ protected:
 	unsigned int MaxHealth, CurrentHealth;
 	unsigned int Shield;
 
+	sf::Texture CharacterTexture;
+	sf::Sprite CharacterSprite;
+
 public:
 	/** Constructor */
 	explicit Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
