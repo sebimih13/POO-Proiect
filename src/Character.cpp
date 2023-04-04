@@ -21,7 +21,7 @@ Character::Character(const Character& other)
 	: Name(other.Name),
 	  MaxHealth(other.MaxHealth), CurrentHealth(other.CurrentHealth),
 	  Shield(other.Shield),
-	  CharacterTexture(CharacterTexture), CharacterSprite(CharacterSprite)
+	  CharacterTexture(other.CharacterTexture), CharacterSprite(other.CharacterSprite)
 {
 
 } 
