@@ -355,7 +355,16 @@ void Player::Print(std::ostream& os) const
 	os << "CurrentEnergy : " << CurrentEnergy << '\n';
 
 	os << "Cards : " << Cards.size() << '\n';
+	for (unsigned int i = 0; i < Cards.size(); i++)
+	{
+		os << *Cards[i] << '\n';
+	}
+
 	os << "Items : " << Items.size() << '\n';
+	for (unsigned int i = 0; i < Items.size(); i++)
+	{
+		os << *Items[i] << '\n';
+	}
 
 	if (CurrentEnemy)
 	{
