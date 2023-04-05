@@ -63,7 +63,8 @@ public:
 	/** Destructor */
 	~HealthPotion() override;
 
-	// TODO : overload operators
+	/** Operator = */
+	HealthPotion& operator = (const HealthPotion& other);
 
 	/** Use Item */
 	void Use(Player* Owner) override;
@@ -84,7 +85,8 @@ public:
 	/** Destructor */
 	~BlockPotion() override;
 
-	// TODO : overload operators
+	/** Operator = */
+	BlockPotion& operator = (const BlockPotion& other);
 
 	/** Use Item */
 	void Use(Player* Owner) override;
@@ -102,7 +104,8 @@ public:
 	/** Destructor */
 	~FullEnergyPotion() override;
 
-	// TODO : overload operators
+	/** Operator = */
+	FullEnergyPotion& operator = (const FullEnergyPotion& other);
 
 	/** Use Item */
 	void Use(Player* Owner) override;
@@ -120,7 +123,8 @@ public:
 	/** Destructor */
 	~MaxHealthPotion() override;
 
-	// TODO : overload operators
+	/** Operator = */
+	MaxHealthPotion& operator = (const MaxHealthPotion& other);
 
 	/** Use Item */
 	void Use(Player* Owner) override;

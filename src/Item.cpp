@@ -125,6 +125,15 @@ HealthPotion::~HealthPotion()
 	std::cout << "Destruct HealthPotion\n";
 }
 
+HealthPotion& HealthPotion::operator = (const HealthPotion& other)
+{
+	Item::operator=(other);
+
+	HP = other.HP;
+
+	return *this;
+}
+
 void HealthPotion::Use(Player* Owner)
 {
 	Owner->Heal(HP);
@@ -151,6 +160,15 @@ BlockPotion::BlockPotion(const unsigned int Block, const std::string& FilePath, 
 BlockPotion::~BlockPotion()
 {
 	std::cout << "Destruct BlockPotion\n";
+}
+
+BlockPotion& BlockPotion::operator = (const BlockPotion& other)
+{
+	Item::operator=(other);
+
+	Block = other.Block;
+
+	return *this;
 }
 
 void BlockPotion::Use(Player* Owner)
@@ -180,6 +198,13 @@ FullEnergyPotion::~FullEnergyPotion()
 	std::cout << "Destruct FullEnergyPotion\n";
 }
 
+FullEnergyPotion& FullEnergyPotion::operator = (const FullEnergyPotion& other)
+{
+	Item::operator=(other);
+
+	return *this;
+}
+
 void FullEnergyPotion::Use(Player* Owner)
 {
 	Owner->RegenerateFullEnergy();
@@ -199,6 +224,15 @@ MaxHealthPotion::MaxHealthPotion(const unsigned int HP, const std::string& FileP
 MaxHealthPotion::~MaxHealthPotion()
 {
 	std::cout << "Destruct MaxHealthPotion\n";
+}
+
+MaxHealthPotion& MaxHealthPotion::operator = (const MaxHealthPotion& other)
+{
+	Item::operator=(other);
+
+	HP = other.HP;
+
+	return *this;
 }
 
 void MaxHealthPotion::Use(Player* Owner)
