@@ -46,6 +46,9 @@ public:
 
 	/** Getters */
 	inline bool GetIsSelected() const { return IsSelected; }
+
+protected:
+	virtual void Print(std::ostream& os) const;
 };
 
 class HealthPotion : public Item
@@ -64,6 +67,9 @@ public:
 
 	/** Use Item */
 	void Use(Player* Owner) override;
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 
 class BlockPotion : public Item
@@ -82,6 +88,9 @@ public:
 
 	/** Use Item */
 	void Use(Player* Owner) override;
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 
 class FullEnergyPotion : public Item
@@ -115,5 +124,8 @@ public:
 
 	/** Use Item */
 	void Use(Player* Owner) override;
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 

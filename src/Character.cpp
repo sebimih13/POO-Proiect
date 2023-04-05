@@ -48,13 +48,7 @@ Character& Character::operator = (const Character& other)
 
 std::ostream& operator << (std::ostream& os, const Character& c)
 {
-	std::cout << "Name : " << c.Name << '\n';
-
-	std::cout << "MaxHealth : " << c.MaxHealth << '\n';
-	std::cout << "CurrentHealth : " << c.CurrentHealth << '\n';
-
-	std::cout << "Shield : " << c.Shield << '\n';
-
+	c.Print(os);
 	return os;
 }
 
@@ -85,6 +79,16 @@ void Character::TakeDamage(const unsigned int Damage)
 void Character::IncreaseShield(const unsigned int Amount)
 {
 	Shield += Amount;
+}
+
+void Character::Print(std::ostream& os) const
+{
+	os << "Name : " << Name << '\n';
+
+	os << "MaxHealth : " << MaxHealth << '\n';
+	os << "CurrentHealth : " << CurrentHealth << '\n';
+
+	os << "Shield : " << Shield << '\n';
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -125,7 +129,6 @@ Player::Player(const Player& other)
 	
 }
 
-/** Destructor */
 Player::~Player()
 {
 	for (unsigned int i = 0; i < Items.size(); i++)
@@ -137,6 +140,24 @@ Player::~Player()
 	{
 		delete Cards[i];
 	}
+}
+
+Player& Player::operator = (const Player& other)
+{
+	Character::operator=(other);
+
+	MaxEnergy = other.MaxEnergy;
+	CurrentEnergy = other.CurrentEnergy;
+
+	CurrentEnemy = other.CurrentEnemy;
+
+	Cards = other.Cards;
+	Items = other.Items;
+
+	EnergyBackgroundTexture = other.EnergyBackgroundTexture;
+	EnergyBackgroundSprite = other.EnergyBackgroundSprite;
+
+	return *this;
 }
 
 void Player::Draw(sf::RenderWindow& Window)
@@ -326,6 +347,22 @@ void Player::AddItem(Item* const NewItem)
 	Items.push_back(NewItem);
 }
 
+void Player::Print(std::ostream& os) const
+{
+	Character::Print(os);
+
+	os << "MaxEnergy : " << MaxEnergy << '\n';
+	os << "CurrentEnergy : " << CurrentEnergy << '\n';
+
+	os << "Cards : " << Cards.size() << '\n';
+	os << "Items : " << Items.size() << '\n';
+
+	if (CurrentEnemy)
+	{
+		os << "Enemy target valid\n";
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////			Enemy				///////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -354,6 +391,15 @@ Enemy::Enemy(const Player& other)
 Enemy::~Enemy()
 {
 	std::cout << "Destruct Enemy\n";
+}
+
+Enemy& Enemy::operator = (const Enemy& other)
+{
+	Character::operator=(other);
+
+	// TODO : add
+
+	return *this;
 }
 
 void Enemy::Draw(sf::RenderWindow& Window)
@@ -403,5 +449,13 @@ void Enemy::Draw(sf::RenderWindow& Window)
 	ShieldText.setPosition(sf::Vector2f(ShieldTextPosX, ShieldTextPosY));
 
 	Window.draw(ShieldText);
+}
+
+void Enemy::Print(std::ostream& os) const
+{
+	Character::Print(os);
+
+	// TODO
+	os << "Print Enemy \n";
 }
 

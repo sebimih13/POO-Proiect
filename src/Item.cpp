@@ -51,9 +51,7 @@ Item& Item::operator = (const Item& other)
 
 std::ostream& operator << (std::ostream& os, const Item& i)
 {
-	std::cout << "Name : " << i.Name << '\n';
-	std::cout << "Description : " << i.Description << '\n';
-
+	i.Print(os);
 	return os;
 }
 
@@ -105,6 +103,12 @@ void Item::Update(const sf::Vector2i& MousePosition)
 	}
 }
 
+void Item::Print(std::ostream& os) const
+{
+	os << "Name : " << Name << '\n';
+	os << "Description : " << Description << '\n';
+}
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////			HealthPotion		///////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -126,6 +130,13 @@ void HealthPotion::Use(Player* Owner)
 	Owner->Heal(HP);
 }
 
+void HealthPotion::Print(std::ostream& os) const
+{
+	Item::Print(os);
+
+	os << "Health : " << HP << '\n';
+}
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////			BlockPotion			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -145,6 +156,13 @@ BlockPotion::~BlockPotion()
 void BlockPotion::Use(Player* Owner)
 {
 	Owner->IncreaseShield(Block);
+}
+
+void BlockPotion::Print(std::ostream& os) const
+{
+	Item::Print(os);
+
+	os << "Block : " << Block << '\n';
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -186,5 +204,12 @@ MaxHealthPotion::~MaxHealthPotion()
 void MaxHealthPotion::Use(Player* Owner)
 {
 	Owner->IncreaseMaxHealth(HP);
+}
+
+void MaxHealthPotion::Print(std::ostream& os) const
+{
+	Item::Print(os);
+
+	os << "Increase Max Health : " << HP << '\n';
 }
 

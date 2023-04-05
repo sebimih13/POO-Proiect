@@ -47,6 +47,9 @@ public:
 
 	/** Shield */
 	void IncreaseShield(const unsigned int Amount);
+
+protected:
+	virtual void Print(std::ostream& os) const;
 };
 
 class Player : public Character
@@ -87,7 +90,8 @@ public:
 	/** Destructor */
 	~Player();
 
-	// TODO : overload operators
+	/** Operator = */
+	Player& operator = (const Player& other);
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window) override;
@@ -112,12 +116,15 @@ public:
 
 	/** Setters */
 	inline void SetCurrentEnemy(Enemy* const NewEnemy) { CurrentEnemy = NewEnemy; }
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 
 class Enemy : public Character
 {
 private:
-	// TODO
+	// TODO : add
 
 public:
 	/** Constructor */
@@ -128,10 +135,14 @@ public:
 
 	/** Destructor */
 	~Enemy();
-
-	// TODO : overload operators
+	
+	/** Operator = */
+	Enemy& operator = (const Enemy& other);
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window) override;
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 

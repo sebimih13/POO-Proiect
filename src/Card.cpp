@@ -55,12 +55,7 @@ Card& Card::operator = (const Card& Other)
 
 std::ostream& operator << (std::ostream& os, const Card& c)
 {
-	os << "FilePath : " << c.FilePath << '\n';
-	os << "Name : " << c.Name << '\n';
-	os << "Description : " << c.Description << '\n';
-
-	os << "Energy : " << c.EnergyCost << '\n';
-
+	c.Print(os);
 	return os;
 }
 
@@ -106,6 +101,15 @@ void Card::Update(const sf::Vector2i& MousePosition)
 	}
 }
 
+void Card::Print(std::ostream& os) const
+{
+	os << "FilePath : " << FilePath << '\n';
+	os << "Name : " << Name << '\n';
+	os << "Description : " << Description << '\n';
+
+	os << "Energy : " << EnergyCost << '\n';
+}
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////			DamageCard			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -129,10 +133,26 @@ DamageCard::~DamageCard()
 	std::cout << "Destructor DamageCard\n";
 }
 
+DamageCard& DamageCard::operator = (const DamageCard& other)
+{
+	Card::operator=(other);
+
+	Damage = other.Damage;
+
+	return *this;
+}
+
 void DamageCard::Use(Enemy* CurrentEnemy)
 {
 	// TODO : exceptie -> folosita doar pt clasa Enemy
 	CurrentEnemy->TakeDamage(Damage);
+}
+
+void DamageCard::Print(std::ostream& os) const
+{
+	Card::Print(os);
+
+	os << "Damage : " << Damage << '\n';
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -158,9 +178,25 @@ ShieldCard::~ShieldCard()
 	std::cout << "Destructor ShieldCard\n";
 }
 
+ShieldCard& ShieldCard::operator = (const ShieldCard& other)
+{
+	Card::operator=(other);
+
+	Block = other.Block;
+
+	return *this;
+}
+
 void ShieldCard::Use(Player* CurrentPlayer)
 {
 	// TODO : exceptie -> folosita doar pt clasa Player
 	CurrentPlayer->IncreaseShield(Block);
+}
+
+void ShieldCard::Print(std::ostream& os) const
+{
+	Card::Print(os);
+
+	os << "Block : " << Block << '\n';
 }
 

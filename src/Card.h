@@ -51,6 +51,9 @@ public:
 	/** Get string based on enum type */
 	//static const std::string GetType(const CardType Type);
 	//static const std::string GetRarity(const CardRarity Rarity);
+
+protected:
+	virtual void Print(std::ostream& os) const;
 };
 
 class DamageCard : public Card
@@ -68,9 +71,13 @@ public:
 	/** Destructor */
 	~DamageCard();
 
-	// TODO : overload operators
+	/** Operator = */
+	DamageCard& operator = (const DamageCard& other);
 
 	void Use(Enemy* CurrentEnemy);
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 
 class ShieldCard : public Card
@@ -88,8 +95,12 @@ public:
 	/** Destructor */
 	~ShieldCard();
 
-	// TODO : overload operators
+	/** Operator = */
+	ShieldCard& operator = (const ShieldCard& other);
 
 	void Use(Player* CurrentPlayer);
+
+protected:
+	void Print(std::ostream& os) const override;
 };
 
