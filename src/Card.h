@@ -38,6 +38,9 @@ public:
 	/** Operator << */
 	friend std::ostream& operator << (std::ostream& os, const Card& c);
 
+	/** Clone - Virtual Constructor */
+	virtual Card* Clone() const = 0;
+
 	/** Draw */
 	void Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale = sf::Vector2f(0.3f, 0.3f));
 
@@ -74,6 +77,9 @@ public:
 	/** Operator = */
 	DamageCard& operator = (const DamageCard& other);
 
+	/** Clone - Virtual Constructor */
+	Card* Clone() const override;
+
 	void Use(Enemy* CurrentEnemy);
 
 protected:
@@ -97,6 +103,9 @@ public:
 
 	/** Operator = */
 	ShieldCard& operator = (const ShieldCard& other);
+
+	/** Clone - Virtual Constructor */
+	Card* Clone() const override;
 
 	void Use(Player* CurrentPlayer);
 

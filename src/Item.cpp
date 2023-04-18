@@ -134,6 +134,11 @@ HealthPotion& HealthPotion::operator = (const HealthPotion& other)
 	return *this;
 }
 
+Item* HealthPotion::Clone() const
+{
+	return new HealthPotion(*this);
+}
+
 void HealthPotion::Use(Player* Owner)
 {
 	Owner->Heal(HP);
@@ -171,6 +176,11 @@ BlockPotion& BlockPotion::operator = (const BlockPotion& other)
 	return *this;
 }
 
+Item* BlockPotion::Clone() const
+{
+	return new BlockPotion(*this);
+}
+
 void BlockPotion::Use(Player* Owner)
 {
 	Owner->IncreaseShield(Block);
@@ -205,6 +215,11 @@ FullEnergyPotion& FullEnergyPotion::operator = (const FullEnergyPotion& other)
 	return *this;
 }
 
+Item* FullEnergyPotion::Clone() const
+{
+	return new FullEnergyPotion(*this);
+}
+
 void FullEnergyPotion::Use(Player* Owner)
 {
 	Owner->RegenerateFullEnergy();
@@ -233,6 +248,11 @@ MaxHealthPotion& MaxHealthPotion::operator = (const MaxHealthPotion& other)
 	HP = other.HP;
 
 	return *this;
+}
+
+Item* MaxHealthPotion::Clone() const
+{
+	return new MaxHealthPotion(*this);
 }
 
 void MaxHealthPotion::Use(Player* Owner)

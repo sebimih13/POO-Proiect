@@ -27,34 +27,33 @@ int main()
 
 
     // Player
-    Player* Player1 = new Player("Eu");
-    std::cout << *Player1 << '\n';
+    Player Player1("Eu");
+    std::cout << Player1 << '\n';
 
     // Change stats
-    Player1->ConsumeEnergy(4);
-    Player1->RegenerateEnergy(1);
-    Player1->TakeDamage(20);
+    Player1.ConsumeEnergy(4);
+    Player1.RegenerateEnergy(1);
+    Player1.TakeDamage(20);
     
     // Cards
-    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
-    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
-    Player1->AddCard(new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
-    Player1->AddCard(new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
-    Player1->AddCard(new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
+    Player1.AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
+    Player1.AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
+    Player1.AddCard(new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
+    Player1.AddCard(new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
+    Player1.AddCard(new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
 
     // Items
-    Player1->AddItem(new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
-    Player1->AddItem(new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
-    Player1->AddItem(new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
-    Player1->AddItem(new MaxHealthPotion(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
+    Player1.AddItem(new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
+    Player1.AddItem(new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
+    Player1.AddItem(new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
+    Player1.AddItem(new MaxHealthPotion(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
 
     // Print new stats
-    std::cout << *Player1 << '\n';
+    std::cout << Player1 << '\n';
 
     // Enemy
-    Enemy* Enemy1 = new Enemy("El");
-
-    Player1->SetCurrentEnemy(Enemy1);
+    Enemy Enemy1("El");
+    Player1.SetCurrentEnemy(&Enemy1);
 
 
     // TODO : End Turn Button
@@ -110,7 +109,7 @@ int main()
                     std::cout << "LEFT Mouse Button Pressed \n";
 
                     // Check Items + Cards
-                    Player1->Select();
+                    Player1.Select();
                 }
                 break;
 
@@ -120,7 +119,7 @@ int main()
         }
 
         // Update
-        Player1->Update(sf::Mouse::getPosition(window));
+        Player1.Update(sf::Mouse::getPosition(window));
 
         //using namespace std::chrono_literals;
         //std::this_thread::sleep_for(300ms);
@@ -136,16 +135,13 @@ int main()
         window.draw(EndTurnSprite);
 
         // Draw Player
-        Player1->Draw(window);
+        Player1.Draw(window);
 
         // Draw Enemy
-        Enemy1->Draw(window);
+        Enemy1.Draw(window);
        
         window.display();
     }
-
-    delete Player1;
-    delete Enemy1;
 
     return 0;
 }

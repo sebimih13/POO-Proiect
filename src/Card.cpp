@@ -142,6 +142,11 @@ DamageCard& DamageCard::operator = (const DamageCard& other)
 	return *this;
 }
 
+Card* DamageCard::Clone() const
+{
+	return new DamageCard(*this);
+}
+
 void DamageCard::Use(Enemy* CurrentEnemy)
 {
 	// TODO : exceptie -> folosita doar pt clasa Enemy
@@ -185,6 +190,11 @@ ShieldCard& ShieldCard::operator = (const ShieldCard& other)
 	Block = other.Block;
 
 	return *this;
+}
+
+Card* ShieldCard::Clone() const
+{
+	return new ShieldCard(*this);
 }
 
 void ShieldCard::Use(Player* CurrentPlayer)

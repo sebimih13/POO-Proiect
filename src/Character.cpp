@@ -95,6 +95,22 @@ void Character::Print(std::ostream& os) const
 ///////////////////////			Player				///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
+// Initialization of static const
+const std::vector<sf::Vector2f> Player::CardPosition = {
+		  sf::Vector2f(80.0f, 525.0f),
+		  sf::Vector2f(300.0f, 525.0f),
+		  sf::Vector2f(520.0f, 525.0f),
+		  sf::Vector2f(740.0f, 525.0f),
+		  sf::Vector2f(960.0f, 525.0f)
+};
+
+const std::vector<sf::Vector2f> Player::ItemPosition = {
+		  sf::Vector2f(20.0f, 170.0f),
+		  sf::Vector2f(70.0f, 170.0f),
+		  sf::Vector2f(120.0f, 170.0f),
+		  sf::Vector2f(170.0f, 170.0f)
+};
+
 Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
 	: Character(Name, MaxHealth, Shield),
 	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy),
@@ -123,10 +139,17 @@ Player::Player(const Player& other)
 	: Character(other),
 	  MaxEnergy(other.MaxEnergy), CurrentEnergy(other.CurrentEnergy),
 	  CurrentEnemy(other.CurrentEnemy),
-	  Cards(other.Cards), Items(other.Items),
 	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
-	
+	for (Card* c : Cards)
+	{
+		Cards.push_back(c->Clone());
+	}
+
+	for (Item* i : Items)
+	{
+		Items.push_back(i->Clone());
+	}
 }
 
 Player::~Player()
@@ -151,8 +174,15 @@ Player& Player::operator = (const Player& other)
 
 	CurrentEnemy = other.CurrentEnemy;
 
-	Cards = other.Cards;
-	Items = other.Items;
+	for (Card* c : Cards)
+	{
+		Cards.push_back(c->Clone());
+	}
+
+	for (Item* i : Items)
+	{
+		Items.push_back(i->Clone());
+	}
 
 	EnergyBackgroundTexture = other.EnergyBackgroundTexture;
 	EnergyBackgroundSprite = other.EnergyBackgroundSprite;

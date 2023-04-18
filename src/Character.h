@@ -65,20 +65,8 @@ private:
 	sf::Texture EnergyBackgroundTexture;
 	sf::Sprite EnergyBackgroundSprite;
 
-	const std::vector<sf::Vector2f> CardPosition = {
-		  sf::Vector2f(80.0f, 525.0f),
-		  sf::Vector2f(300.0f, 525.0f),
-		  sf::Vector2f(520.0f, 525.0f),
-		  sf::Vector2f(740.0f, 525.0f),
-		  sf::Vector2f(960.0f, 525.0f)
-	};
-
-	const std::vector<sf::Vector2f> ItemPosition = {
-		  sf::Vector2f(20.0f, 170.0f),
-		  sf::Vector2f(70.0f, 170.0f),
-		  sf::Vector2f(120.0f, 170.0f),
-		  sf::Vector2f(170.0f, 170.0f)
-	};
+	static const std::vector<sf::Vector2f> CardPosition;
+	static const std::vector<sf::Vector2f> ItemPosition;
 
 public:
 	/** Constructor */

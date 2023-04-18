@@ -35,6 +35,9 @@ public:
 	/** Operator << */
 	friend std::ostream& operator << (std::ostream& os, const Item& i);
 
+	/** Clone - Virtual Constructor */
+	virtual Item* Clone() const = 0;
+
 	/** Draw */
 	void Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale = sf::Vector2f(1.0f, 1.0f));
 
@@ -66,6 +69,9 @@ public:
 	/** Operator = */
 	HealthPotion& operator = (const HealthPotion& other);
 
+	/** Clone - Virtual Constructor */
+	Item* Clone() const override;
+
 	/** Use Item */
 	void Use(Player* Owner) override;
 
@@ -88,6 +94,9 @@ public:
 	/** Operator = */
 	BlockPotion& operator = (const BlockPotion& other);
 
+	/** Clone - Virtual Constructor */
+	Item* Clone() const override;
+
 	/** Use Item */
 	void Use(Player* Owner) override;
 
@@ -107,6 +116,9 @@ public:
 	/** Operator = */
 	FullEnergyPotion& operator = (const FullEnergyPotion& other);
 
+	/** Clone - Virtual Constructor */
+	Item* Clone() const override;
+
 	/** Use Item */
 	void Use(Player* Owner) override;
 };
@@ -125,6 +137,9 @@ public:
 
 	/** Operator = */
 	MaxHealthPotion& operator = (const MaxHealthPotion& other);
+
+	/** Clone - Virtual Constructor */
+	Item* Clone() const override;
 
 	/** Use Item */
 	void Use(Player* Owner) override;
