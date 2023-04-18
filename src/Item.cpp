@@ -120,6 +120,13 @@ HealthPotion::HealthPotion(const unsigned int HP, const std::string& FilePath, c
 	std::cout << "New HealthPotion\n";
 }
 
+HealthPotion::HealthPotion(const HealthPotion& other)
+	: Item(other),
+	  HP(other.HP)
+{
+	
+}
+
 HealthPotion::~HealthPotion()
 {
 	std::cout << "Destruct HealthPotion\n";
@@ -162,6 +169,13 @@ BlockPotion::BlockPotion(const unsigned int Block, const std::string& FilePath, 
 	std::cout << "New BlockPotion\n";
 }
 
+BlockPotion::BlockPotion(const BlockPotion& other)
+	: Item(other),
+	  Block(other.Block)
+{
+
+}
+
 BlockPotion::~BlockPotion()
 {
 	std::cout << "Destruct BlockPotion\n";
@@ -194,13 +208,19 @@ void BlockPotion::Print(std::ostream& os) const
 }
 
 ///////////////////////////////////////////////////////////////////////////
-///////////////////////			EnergyPotion		///////////////////////
+///////////////////////		FullEnergyPotion		///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
 FullEnergyPotion::FullEnergyPotion(const std::string& FilePath, const std::string& Name, const std::string& Description)
 	: Item(FilePath, Name, Description)
 {
 	std::cout << "New FullEnergyPotion\n";
+}
+
+FullEnergyPotion::FullEnergyPotion(const FullEnergyPotion& other)
+	: Item(other)
+{
+
 }
 
 FullEnergyPotion::~FullEnergyPotion()
@@ -234,6 +254,13 @@ MaxHealthPotion::MaxHealthPotion(const unsigned int HP, const std::string& FileP
 	  HP(HP)
 {
 	std::cout << "New MaxHealthPotion\n";
+}
+
+MaxHealthPotion::MaxHealthPotion(const MaxHealthPotion& other)
+	: Item(other),
+	  HP(other.HP)
+{
+
 }
 
 MaxHealthPotion::~MaxHealthPotion()

@@ -141,12 +141,12 @@ Player::Player(const Player& other)
 	  CurrentEnemy(other.CurrentEnemy),
 	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
-	for (Card* c : Cards)
+	for (Card* c : other.Cards)
 	{
 		Cards.push_back(c->Clone());
 	}
 
-	for (Item* i : Items)
+	for (Item* i : other.Items)
 	{
 		Items.push_back(i->Clone());
 	}
@@ -174,12 +174,12 @@ Player& Player::operator = (const Player& other)
 
 	CurrentEnemy = other.CurrentEnemy;
 
-	for (Card* c : Cards)
+	for (Card* c : other.Cards)
 	{
 		Cards.push_back(c->Clone());
 	}
 
-	for (Item* i : Items)
+	for (Item* i : other.Items)
 	{
 		Items.push_back(i->Clone());
 	}

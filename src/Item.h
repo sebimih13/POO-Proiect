@@ -63,6 +63,9 @@ public:
 	/** Constructor */
 	explicit HealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
 
+	/** Copy Constructor */
+	explicit HealthPotion(const HealthPotion& other);
+
 	/** Destructor */
 	~HealthPotion() override;
 
@@ -88,6 +91,9 @@ public:
 	/** Constructor */
 	explicit BlockPotion(const unsigned int Block, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
 
+	/** Copy Constructor */
+	explicit BlockPotion(const BlockPotion& other);
+
 	/** Destructor */
 	~BlockPotion() override;
 
@@ -110,6 +116,9 @@ public:
 	/** Constructor */
 	explicit FullEnergyPotion(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
 
+	/** Copy Constructor */
+	explicit FullEnergyPotion(const FullEnergyPotion& other);
+
 	/** Destructor */
 	~FullEnergyPotion() override;
 
@@ -131,6 +140,9 @@ private:
 public:
 	/** Constructor */
 	explicit MaxHealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+
+	/** Copy Constructor */
+	explicit MaxHealthPotion(const MaxHealthPotion& other);
 
 	/** Destructor */
 	~MaxHealthPotion() override;
