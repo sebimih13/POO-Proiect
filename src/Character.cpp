@@ -1,6 +1,7 @@
 #include "Character.h"
 
 #include <iostream>
+#include <random>
 
 #include "Card.h"
 #include "Item.h"
@@ -64,8 +65,21 @@ void Character::Heal(const unsigned int Amount)
 	}
 }
 
-void Character::TakeDamage(const unsigned int Damage)
+void Character::TakeDamage(unsigned int Damage)
 {
+	// Take damage from Shield
+	if (int(Shield) - int(Damage) <= 0)
+	{
+		Damage -= Shield;
+		Shield = 0;
+	}
+	else
+	{
+		Shield -= Damage;
+		return;
+	}
+
+	// Take damage from Health
 	if (int(CurrentHealth) - int(Damage) <= 0)
 	{
 		CurrentHealth = 0;
@@ -128,7 +142,7 @@ Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsi
 
 	if (!CharacterTexture.loadFromFile("assets/characters/Ironclad.png"))      // TODO : Resource Manager
 	{
-		std::cout << "Can't load : assets/characters/Ironclad.png";
+		std::cout << "Can't load : assets/characters/Ironclad.png \n";
 	}
 
 	CharacterSprite.setTexture(CharacterTexture);
@@ -141,9 +155,19 @@ Player::Player(const Player& other)
 	  CurrentEnemy(other.CurrentEnemy),
 	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
+	for (Card* c : other.CardDeck)
+	{
+		CardDeck.push_back(c->Clone());
+	}
+
 	for (Card* c : other.Cards)
 	{
 		Cards.push_back(c->Clone());
+	}
+
+	for (Card* c : other.UnusedCards)
+	{
+		UnusedCards.push_back(c->Clone());
 	}
 
 	for (Item* i : other.Items)
@@ -159,9 +183,12 @@ Player::~Player()
 		delete Items[i];
 	}
 
-	for (unsigned int i = 0; i < Cards.size(); i++)
+	Cards.clear();
+	UnusedCards.clear();
+
+	for (unsigned int i = 0; i < CardDeck.size(); i++)
 	{
-		delete Cards[i];
+		delete CardDeck[i];
 	}
 }
 
@@ -174,9 +201,19 @@ Player& Player::operator = (const Player& other)
 
 	CurrentEnemy = other.CurrentEnemy;
 
+	for (Card* c : other.CardDeck)
+	{
+		CardDeck.push_back(c->Clone());
+	}
+
 	for (Card* c : other.Cards)
 	{
 		Cards.push_back(c->Clone());
+	}
+
+	for (Card* c : other.UnusedCards)
+	{
+		UnusedCards.push_back(c->Clone());
 	}
 
 	for (Item* i : other.Items)
@@ -194,7 +231,7 @@ void Player::Draw(sf::RenderWindow& Window)
 {
 	// Load Font
 	sf::Font Font;
-	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))
+	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
 	{
 		std::cout << "Can't load font : PoppinsRegular \n";
 	}
@@ -295,7 +332,7 @@ void Player::Select()
 		if (Cards[i]->GetIsSelected() && CurrentEnergy >= Cards[i]->GetEnergy())	// TODO : functie separata pt: CurrentEnergy >= Cards[i]->GetEnergy()
 		{
 			// Dynamic Cast
-			if (DamageCard* Card = dynamic_cast<DamageCard*>(Cards[i])) 
+			if (DamageCard* Card = dynamic_cast<DamageCard*>(Cards[i]))
 			{
 				std::cout << "DamageCard : cast pointer reusit\n";
 				Card->Use(CurrentEnemy);
@@ -316,7 +353,6 @@ void Player::Select()
 			}
 
 			ConsumeEnergy(Cards[i]->GetEnergy());
-			delete Cards[i];
 			Cards.erase(Cards.begin() + i);
 		}
 	}
@@ -369,12 +405,48 @@ void Player::ConsumeEnergy(const unsigned int Amount)
 
 void Player::AddCard(Card* const NewCard)
 {
-	Cards.push_back(NewCard);
+	CardDeck.push_back(NewCard);
 }
 
 void Player::AddItem(Item* const NewItem)
 {
 	Items.push_back(NewItem);
+}
+
+void Player::ShuffleCards()
+{
+	// Random seed
+	srand(time(0));
+
+	UnusedCards = CardDeck;
+
+	for (int i = 0; i < UnusedCards.size(); i++)
+	{
+		int r = i + (rand() % (UnusedCards.size() - i));		
+		std::swap(UnusedCards[i], UnusedCards[r]);
+	}
+}
+
+void Player::NextCards()
+{
+	Cards.clear();
+
+	if (UnusedCards.size() < 5)
+	{
+		ShuffleCards();
+	}
+
+	if (UnusedCards.size() < 5)
+	{
+		// TODO : delete
+		std::cout << "ERROR : UnusedCards < 5 \n";
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		Cards.push_back(UnusedCards.back());
+		UnusedCards.pop_back();
+	}
 }
 
 void Player::Print(std::ostream& os) const
@@ -384,10 +456,10 @@ void Player::Print(std::ostream& os) const
 	os << "MaxEnergy : " << MaxEnergy << '\n';
 	os << "CurrentEnergy : " << CurrentEnergy << '\n';
 
-	os << "Cards : " << Cards.size() << '\n';
-	for (unsigned int i = 0; i < Cards.size(); i++)
+	os << "Card Deck : " << CardDeck.size() << '\n';
+	for (unsigned int i = 0; i < CardDeck.size(); i++)
 	{
-		os << *Cards[i] << '\n';
+		os << *CardDeck[i] << '\n';
 	}
 
 	os << "Items : " << Items.size() << '\n';
@@ -407,22 +479,41 @@ void Player::Print(std::ostream& os) const
 ///////////////////////////////////////////////////////////////////////////
 
 Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
-	: Character(Name, MaxHealth, Shield)
+	: Character(Name, MaxHealth, Shield), NextMove(EnemyMove::None), IncomingMove(0)
 {
 	std::cout << "New Enemy\n";
 
 	// Load Textures
 	if (!CharacterTexture.loadFromFile("assets/characters/GremlinLeader.png"))  // TODO : Resource Manager
 	{
-		std::cout << "Can't load : assets/characters/GremlinLeader.png";
+		std::cout << "Can't load : assets/characters/GremlinLeader.png \n";
 	}
 
 	CharacterSprite.setTexture(CharacterTexture);
 	CharacterSprite.setPosition(sf::Vector2f(650.0f, 250.0f));
+
+	if (!AttackTexture.loadFromFile("assets/others/attack.png"))  // TODO : Resource Manager
+	{
+		std::cout << "Can't load : assets/others/attack.png \n";
+	}
+
+	if (!ShieldTexture.loadFromFile("assets/others/defend.png"))  // TODO : Resource Manager
+	{
+		std::cout << "Can't load : assets/others/defend.png \n";
+	}
+
+	float AttackSpritePosX = CharacterSprite.getGlobalBounds().getPosition().x + CharacterSprite.getGlobalBounds().getSize().x / 2.0f - AttackTexture.getSize().x / 2.0f;
+	float AttackSpritePosY = CharacterSprite.getGlobalBounds().getPosition().y - 150.0f;
+	NextMoveSprite.setPosition(sf::Vector2f(AttackSpritePosX, AttackSpritePosY));
+
+	// Set random seed
+	srand(time(0));
 }
 
-Enemy::Enemy(const Player& other)
-	: Character(other)
+Enemy::Enemy(const Enemy& other)
+	: Character(other),
+	  NextMove(other.NextMove), IncomingMove(other.IncomingMove),
+	  AttackTexture(other.AttackTexture), ShieldTexture(other.ShieldTexture), NextMoveSprite(other.NextMoveSprite)
 {
 
 }
@@ -434,9 +525,14 @@ Enemy::~Enemy()
 
 Enemy& Enemy::operator = (const Enemy& other)
 {
-	Character::operator=(other);
+	Character::operator = (other);
 
-	// TODO : add
+	NextMove = other.NextMove;
+	IncomingMove = other.IncomingMove;
+
+	AttackTexture = other.AttackTexture;
+	ShieldTexture = other.ShieldTexture;
+	NextMoveSprite = other.NextMoveSprite;
 
 	return *this;
 }
@@ -452,6 +548,37 @@ void Enemy::Draw(sf::RenderWindow& Window)
 
 	// Draw Sprite
 	Window.draw(CharacterSprite);
+	
+	// Draw Next Move
+	if (NextMove != EnemyMove::None)
+	{
+		sf::Text NextMoveText;
+		NextMoveText.setFont(Font);
+		NextMoveText.setCharacterSize(25);
+		NextMoveText.setFillColor(sf::Color::White);
+		NextMoveText.setString(std::to_string(IncomingMove));
+
+		switch (NextMove)
+		{
+			case EnemyMove::Attack:
+				NextMoveSprite.setTexture(AttackTexture);
+				break;
+
+			case EnemyMove::Shield:
+				NextMoveSprite.setTexture(ShieldTexture);
+				break;
+
+			default:
+				break;
+		}
+
+		float NextMoveTextPosX = NextMoveSprite.getGlobalBounds().getPosition().x + 30.0f;
+		float NextMoveTextPosY = NextMoveSprite.getGlobalBounds().getPosition().y + NextMoveSprite.getGlobalBounds().getSize().y - 60.0f;
+		NextMoveText.setPosition(sf::Vector2f(NextMoveTextPosX, NextMoveTextPosY));
+
+		Window.draw(NextMoveSprite);
+		Window.draw(NextMoveText);
+	}
 
 	// Draw Name
 	sf::Text NameText;
@@ -494,7 +621,48 @@ void Enemy::Print(std::ostream& os) const
 {
 	Character::Print(os);
 
-	// TODO
-	os << "Print Enemy \n";
+	os << "Next Move : ";
+	switch (NextMove)
+	{
+		case EnemyMove::Attack: os << "Attack "; break;
+		case EnemyMove::Shield: os << "Shield "; break;
+		default:				os << "None ";	 break;
+	}
+
+	os << IncomingMove << '\n';
+}
+
+void Enemy::NewMove()
+{
+	// Choose a random move
+	int r = rand() % 2;
+	if (r == 0)
+	{
+		NextMove = EnemyMove::Attack;
+	}
+	else
+	{
+		NextMove = EnemyMove::Shield;
+	}
+
+	IncomingMove = rand() % 11;
+}
+
+unsigned int Enemy::GetIncomingAttack()
+{
+	if (NextMove == EnemyMove::Attack)
+	{
+		return IncomingMove;
+	}
+	return 0;
+}
+
+unsigned int Enemy::GetIncomingShield()
+{
+	if (NextMove == EnemyMove::Shield)
+	{
+		return IncomingMove;
+	}
+	return 0;
 }
 

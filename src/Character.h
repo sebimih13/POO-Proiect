@@ -43,7 +43,7 @@ public:
 
 	/** Health */
 	void Heal(const unsigned int Amount);
-	void TakeDamage(const unsigned int Damage);
+	void TakeDamage(unsigned int Damage);
 
 	/** Shield */
 	void IncreaseShield(const unsigned int Amount);
@@ -59,7 +59,10 @@ private:
 
 	Enemy* CurrentEnemy;
 
+	std::vector<Card*> CardDeck;
 	std::vector<Card*> Cards;
+	std::vector<Card*> UnusedCards;
+
 	std::vector<Item*> Items;
 
 	sf::Texture EnergyBackgroundTexture;
@@ -67,6 +70,8 @@ private:
 
 	static const std::vector<sf::Vector2f> CardPosition;
 	static const std::vector<sf::Vector2f> ItemPosition;
+
+	void ShuffleCards();
 
 public:
 	/** Constructor */
@@ -102,6 +107,8 @@ public:
 	void AddCard(Card* const NewCard);
 	void AddItem(Item* const NewItem);
 
+	void NextCards();
+
 	/** Setters */
 	inline void SetCurrentEnemy(Enemy* const NewEnemy) { CurrentEnemy = NewEnemy; }
 
@@ -109,17 +116,29 @@ protected:
 	void Print(std::ostream& os) const override;
 };
 
+enum class EnemyMove
+{
+	Attack,
+	Shield,
+	None
+};
+
 class Enemy : public Character
 {
 private:
-	// TODO : add
+	EnemyMove NextMove;
+	unsigned int IncomingMove;
+
+	sf::Texture AttackTexture;
+	sf::Texture ShieldTexture;
+	sf::Sprite NextMoveSprite;
 
 public:
 	/** Constructor */
 	explicit Enemy(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
 
 	/** Copy Constructor */
-	explicit Enemy(const Player& other);
+	explicit Enemy(const Enemy& other);
 
 	/** Destructor */
 	~Enemy();
@@ -129,6 +148,13 @@ public:
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window) override;
+
+	/** Set next move */
+	void NewMove();
+
+	/** Getters */
+	unsigned int GetIncomingAttack();
+	unsigned int GetIncomingShield();
 
 protected:
 	void Print(std::ostream& os) const override;
