@@ -22,8 +22,8 @@ Game::~Game()
 
 void Game::Init()
 {
-    Player1 = std::make_unique<Player>("Eu");   // TODO new Player("Eu");
-    Enemy1 = std::make_unique<Enemy>("El");     // TODO new Enemy("El");
+    Player1 = std::make_unique<Player>("Eu");
+    Enemy1 = std::make_unique<Enemy>("El");
     IsEndTurnButtonSelected = false;
 
     // End Turn Button Norm + Hover
