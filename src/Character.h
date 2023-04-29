@@ -22,6 +22,8 @@ protected:
 	sf::Texture CharacterTexture;
 	sf::Sprite CharacterSprite;
 
+	sf::Font Font;
+
 public:
 	/** Constructor */
 	explicit Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);

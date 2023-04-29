@@ -1,8 +1,9 @@
 #include "Card.h"
 
-#include <iostream>
-
 #include "Character.h"
+#include "ExceptionHierarchy.h"
+
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////				Card			///////////////////////
@@ -17,7 +18,7 @@ Card::Card(const std::string& FilePath, const std::string& Name, const std::stri
 
 	if (!Texture.loadFromFile(FilePath))	// TODO : ResourceManager
 	{
-		std::cout << "Failed to load : " << FilePath << '\n';
+		throw TextureError(FilePath);
 	}
 
 	Sprite.setTexture(Texture);

@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "src/Game.h"
+#include "src/ExceptionHierarchy.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -22,6 +23,26 @@ int main()
     window.create(sf::VideoMode({1200, 800}), "Card Game", sf::Style::Default);
     window.setVerticalSyncEnabled(true);
     //window.setFramerateLimit(60);
+
+    try
+    {
+        Game::GetInstance().Init();
+    }
+    catch (TextureError& err)
+    {
+        std::cout << err.what() << '\n';
+        return -1;
+    }
+    catch (FontError& err)
+    {
+        std::cout << err.what() << '\n';
+        return -1;
+    }
+    catch (GameError& err)
+    {
+        std::cout << err.what() << '\n';
+        return -1;
+    }
 
     // Render Loop
     while (window.isOpen())

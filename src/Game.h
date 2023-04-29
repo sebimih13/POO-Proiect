@@ -1,8 +1,12 @@
 #pragma once
 
-#include "Character.h"
+#include <memory>
 
 #include <SFML/Graphics.hpp>
+
+/** Forward Declarations */
+class Player;
+class Enemy;
 
 class Game
 {
@@ -13,10 +17,10 @@ private:
 	static Game Instance;
 
 	/** Player */
-	Player Player1;		// TODO : pointer?
+	std::unique_ptr<Player> Player1;
 
 	/** Enemy */
-	Enemy Enemy1;		// TODO : pointer?
+	std::unique_ptr<Enemy> Enemy1;
 
 	/** End Turn Button */
 	bool IsEndTurnButtonSelected;
@@ -30,6 +34,9 @@ private:
 	sf::Sprite BackgroundSprite;
 
 public:
+	/** Destructor */
+	~Game();
+
 	/** Copy Constructor */
 	Game(const Game&) = delete;
 
@@ -37,8 +44,7 @@ public:
 	Game& operator = (const Game&) = delete;
 
 	/** Initialize */
-	// TODO
-	// void Init();
+	void Init();
 
 	/** Input */
 	void ProcessInput(const sf::Event& e, sf::RenderWindow& Window);

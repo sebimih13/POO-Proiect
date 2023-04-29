@@ -3,23 +3,38 @@
 #include "Character.h"
 #include "Card.h"
 #include "Item.h"
+#include "ExceptionHierarchy.h"
 
 #include <iostream>
 
 // Initialization of static const
 Game Game::Instance;
 
-Game::Game() : Player1("Eu"), Enemy1("El"), IsEndTurnButtonSelected(false)
+Game::Game() : Player1(nullptr), Enemy1(nullptr), IsEndTurnButtonSelected(false)
 {
+    std::cout << "New Game\n";
+}
+
+Game::~Game()
+{
+
+}
+
+void Game::Init()
+{
+    Player1 = std::make_unique<Player>("Eu");   // TODO new Player("Eu");
+    Enemy1 = std::make_unique<Enemy>("El");     // TODO new Enemy("El");
+    IsEndTurnButtonSelected = false;
+
     // End Turn Button Norm + Hover
     if (!EndTurnNormTexture.loadFromFile("assets/others/endTurnButtonNorm.png"))     // TODO : ResourceManager
     {
-        std::cout << "Can't load : assets/others/endTurnButton.png";
+        throw TextureError("assets/others/endTurnButtonNorm.png");
     }
 
     if (!EndTurnHoverTexture.loadFromFile("assets/others/endTurnButtonHover.png"))     // TODO : ResourceManager
     {
-        std::cout << "Can't load : assets/others/endTurnButton.png";
+        throw TextureError("assets/others/endTurnButtonHover.png");
     }
 
     EndTurnSprite.setTexture(EndTurnNormTexture);
@@ -30,52 +45,52 @@ Game::Game() : Player1("Eu"), Enemy1("El"), IsEndTurnButtonSelected(false)
     // Background
     if (!BackgroundTexture.loadFromFile("assets/others/Background1.png"))       // TODO : ResourceManager
     {
-        std::cout << "Can't load : assets/others/Background2.png";
+        throw TextureError("assets/others/Background1.png");
     }
 
     BackgroundSprite.setTexture(BackgroundTexture);
     BackgroundSprite.setPosition(sf::Vector2f(0.0f, 0.0f));
 
     // Player
-    std::cout << Player1 << '\n';
+    std::cout << *Player1 << '\n';
 
     // Change stats
-    Player1.ConsumeEnergy(4);
-    Player1.RegenerateEnergy(1);
-    Player1.TakeDamage(20);
+    Player1->ConsumeEnergy(4);
+    Player1->RegenerateEnergy(1);
+    Player1->TakeDamage(20);
 
     // Cards
-    Player1.AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
-    Player1.AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
-    Player1.AddCard(new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
-    Player1.AddCard(new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
-    Player1.AddCard(new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
+    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
+    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
+    Player1->AddCard(new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
+    Player1->AddCard(new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
+    Player1->AddCard(new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
 
     // Items
-    Player1.AddItem(new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
-    Player1.AddItem(new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
-    Player1.AddItem(new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
-    Player1.AddItem(new MaxHealthPotion(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
+    Player1->AddItem(new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
+    Player1->AddItem(new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
+    Player1->AddItem(new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
+    Player1->AddItem(new MaxHealthPotion(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
 
     // Print new stats
-    std::cout << Player1 << '\n';
+    std::cout << *Player1 << '\n';
 
     // Enemy
-    Player1.SetCurrentEnemy(&Enemy1);
+    Player1->SetCurrentEnemy(Enemy1.get());
 
     // Set Enemy Attack
-    Enemy1.NewMove();
+    Enemy1->NewMove();
 
     // Get Current Cards
-    Player1.NextCards();
+    Player1->NextCards();
 
-    std::cout << Enemy1 << '\n';
+    std::cout << *Enemy1 << '\n';
 }
 
 void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
 {
     // Update Cards/Items
-    Player1.Update(sf::Mouse::getPosition(Window));
+    Player1->Update(sf::Mouse::getPosition(Window));
 
     // Update Button Texture
     if (490 <= sf::Mouse::getPosition(Window).x && sf::Mouse::getPosition(Window).x <= 705 &&
@@ -111,21 +126,21 @@ void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
                 std::cout << "LEFT Mouse Button Pressed \n";
 
                 // Check Items + Cards
-                Player1.Select();
+                Player1->Select();
 
                 if (IsEndTurnButtonSelected)
                 {
                     // Enemy Move
-                    Player1.TakeDamage(Enemy1.GetIncomingAttack());
-                    Enemy1.IncreaseShield(Enemy1.GetIncomingShield());
+                    Player1->TakeDamage(Enemy1->GetIncomingAttack());
+                    Enemy1->IncreaseShield(Enemy1->GetIncomingShield());
 
                     // Reset Enemy Next Move
-                    Enemy1.NewMove();
+                    Enemy1->NewMove();
 
                     // Reset Player Energy + Cards
                     std::cout << "END TURN\n";
-                    Player1.RegenerateFullEnergy();
-                    Player1.NextCards();
+                    Player1->RegenerateFullEnergy();
+                    Player1->NextCards();
                 }
             }
             break;
@@ -149,9 +164,9 @@ void Game::Draw(sf::RenderWindow& Window)
     Window.draw(EndTurnSprite);
 
     // Draw Player
-    Player1.Draw(Window);
+    Player1->Draw(Window);
 
     // Draw Enemy
-    Enemy1.Draw(Window);
+    Enemy1->Draw(Window);
 }
 

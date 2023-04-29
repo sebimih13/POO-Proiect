@@ -1,10 +1,11 @@
 #include "Character.h"
 
-#include <iostream>
-#include <random>
-
 #include "Card.h"
 #include "Item.h"
+#include "ExceptionHierarchy.h"
+
+#include <iostream>
+#include <random>
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////			Character			///////////////////////
@@ -16,13 +17,20 @@ Character::Character(const std::string& Name, const unsigned int MaxHealth, cons
 	  Shield(Shield)
 {
 	std::cout << "New Character\n";
+
+	// Load Font
+	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
+	{
+		throw FontError("assets/fonts/PoppinsRegular.ttf");
+	}
 }
 
 Character::Character(const Character& other)
 	: Name(other.Name),
 	  MaxHealth(other.MaxHealth), CurrentHealth(other.CurrentHealth),
 	  Shield(other.Shield),
-	  CharacterTexture(other.CharacterTexture), CharacterSprite(other.CharacterSprite)
+	  CharacterTexture(other.CharacterTexture), CharacterSprite(other.CharacterSprite),
+	  Font(other.Font)
 {
 
 } 
@@ -43,6 +51,9 @@ Character& Character::operator = (const Character& other)
 
 	CharacterTexture = other.CharacterTexture;
 	CharacterSprite = other.CharacterSprite;
+	CharacterSprite.setTexture(CharacterTexture);
+
+	Font = other.Font;
 
 	return *this;
 }
@@ -135,14 +146,14 @@ Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsi
 	// Load Textures
 	if (!EnergyBackgroundTexture.loadFromFile("assets/others/EnergyBackground.png"))		// TODO : ResourceManager
 	{
-		std::cout << "Can't load : EnergyBackground.png \n";
+		throw TextureError("assets/others/EnergyBackground.png");
 	}
 
 	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
 
 	if (!CharacterTexture.loadFromFile("assets/characters/Ironclad.png"))      // TODO : Resource Manager
 	{
-		std::cout << "Can't load : assets/characters/Ironclad.png \n";
+		throw TextureError("assets/characters/Ironclad.png");
 	}
 
 	CharacterSprite.setTexture(CharacterTexture);
@@ -229,13 +240,6 @@ Player& Player::operator = (const Player& other)
 
 void Player::Draw(sf::RenderWindow& Window)
 {
-	// Load Font
-	sf::Font Font;
-	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
-	{
-		std::cout << "Can't load font : PoppinsRegular \n";
-	}
-
 	// Draw Sprite
 	Window.draw(CharacterSprite);
 
@@ -486,7 +490,7 @@ Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsign
 	// Load Textures
 	if (!CharacterTexture.loadFromFile("assets/characters/GremlinLeader.png"))  // TODO : Resource Manager
 	{
-		std::cout << "Can't load : assets/characters/GremlinLeader.png \n";
+		throw TextureError("assets/characters/GremlinLeader.png");
 	}
 
 	CharacterSprite.setTexture(CharacterTexture);
@@ -494,12 +498,12 @@ Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsign
 
 	if (!AttackTexture.loadFromFile("assets/others/attack.png"))  // TODO : Resource Manager
 	{
-		std::cout << "Can't load : assets/others/attack.png \n";
+		throw TextureError("assets/others/attack.png");
 	}
 
 	if (!ShieldTexture.loadFromFile("assets/others/defend.png"))  // TODO : Resource Manager
 	{
-		std::cout << "Can't load : assets/others/defend.png \n";
+		throw TextureError("assets/others/defend.png");
 	}
 
 	float AttackSpritePosX = CharacterSprite.getGlobalBounds().getPosition().x + CharacterSprite.getGlobalBounds().getSize().x / 2.0f - AttackTexture.getSize().x / 2.0f;
@@ -539,13 +543,6 @@ Enemy& Enemy::operator = (const Enemy& other)
 
 void Enemy::Draw(sf::RenderWindow& Window)
 {
-	// Load Font
-	sf::Font Font;
-	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))
-	{
-		std::cout << "Can't load font : PoppinsRegular \n";
-	}
-
 	// Draw Sprite
 	Window.draw(CharacterSprite);
 	
