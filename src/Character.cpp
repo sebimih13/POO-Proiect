@@ -420,7 +420,7 @@ void Player::ShuffleCards()
 
 	UnusedCards = CardDeck;
 
-	for (int i = 0; i < UnusedCards.size(); i++)
+	for (unsigned int i = 0; i < UnusedCards.size(); i++)
 	{
 		int r = i + (rand() % (UnusedCards.size() - i));		
 		std::swap(UnusedCards[i], UnusedCards[r]);

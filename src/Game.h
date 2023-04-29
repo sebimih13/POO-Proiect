@@ -37,10 +37,11 @@ public:
 	Game& operator = (const Game&) = delete;
 
 	/** Initialize */
-	void Init();
+	// TODO
+	// void Init();
 
 	/** Input */
-	void ProcessInput(sf::Event& e, sf::RenderWindow& Window);
+	void ProcessInput(const sf::Event& e, sf::RenderWindow& Window);
 
 	/** Update */
 	void Update();

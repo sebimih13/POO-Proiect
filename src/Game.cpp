@@ -72,12 +72,7 @@ Game::Game() : Player1("Eu"), Enemy1("El"), IsEndTurnButtonSelected(false)
     std::cout << Enemy1 << '\n';
 }
 
-void Game::Init()
-{
-
-}
-
-void Game::ProcessInput(sf::Event& e, sf::RenderWindow& Window)
+void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
 {
     // Update Cards/Items
     Player1.Update(sf::Mouse::getPosition(Window));
