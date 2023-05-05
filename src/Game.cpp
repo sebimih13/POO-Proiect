@@ -215,9 +215,6 @@ void Game::Update()
             Player1->RegenerateFullEnergy();
             Player1->NextCards();
         }
-
-        int i = 1;
-        i++;
     }
 }
 
