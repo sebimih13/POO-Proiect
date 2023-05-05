@@ -494,7 +494,7 @@ Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsign
 	}
 
 	CharacterSprite.setTexture(CharacterTexture);
-	CharacterSprite.setPosition(sf::Vector2f(650.0f, 250.0f));
+	CharacterSprite.setPosition(sf::Vector2f(600.0f, 250.0f));
 
 	if (!AttackTexture.loadFromFile("assets/others/attack.png"))  // TODO : Resource Manager
 	{
@@ -642,7 +642,7 @@ void Enemy::NewMove()
 		NextMove = EnemyMove::Shield;
 	}
 
-	IncomingMove = rand() % 11;
+	IncomingMove = 1 + rand() % 15;
 }
 
 unsigned int Enemy::GetIncomingAttack()
