@@ -150,7 +150,6 @@ Card* DamageCard::Clone() const
 
 void DamageCard::Use(Enemy* CurrentEnemy)
 {
-	// TODO : exceptie -> folosita doar pt clasa Enemy
 	CurrentEnemy->TakeDamage(Damage);
 }
 
@@ -200,7 +199,6 @@ Card* ShieldCard::Clone() const
 
 void ShieldCard::Use(Player* CurrentPlayer)
 {
-	// TODO : exceptie -> folosita doar pt clasa Player
 	CurrentPlayer->IncreaseShield(Block);
 }
 
