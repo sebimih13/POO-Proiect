@@ -10,6 +10,21 @@
 // Initialization of static const
 Game Game::Instance;
 
+bool Game::EndGame = false;
+unsigned int Game::CurrentLevel = 0;
+
+const std::vector<std::shared_ptr<EnemyInfo>> Game::LevelEnemy = {
+    std::make_shared<EnemyInfo>("assets/characters/GremlinLeader.png",            "Gremlin",        100, 5),
+    std::make_shared<EnemyInfo>("assets/characters/Book-of-stabbing-pretty.png",  "Book",           120, 5),
+    std::make_shared<EnemyInfo>("assets/characters/Donu.png",                     "Donut",          110, 10),
+    std::make_shared<EnemyInfo>("assets/characters/Slaver-blue-pretty.png",       "Man",             70, 10),
+    std::make_shared<EnemyInfo>("assets/characters/slime.png",                    "Slime",          140, 15),
+    std::make_shared<EnemyInfo>("assets/characters/Spheric-guardian-pretty.png",  "Guardian",       150, 15),
+    std::make_shared<EnemyInfo>("assets/characters/TheCollector.png",             "Collector",      200, 20),
+    std::make_shared<EnemyInfo>("assets/characters/Time-eater-pretty.png",        "Time",           210, 20),
+    std::make_shared<EnemyInfo>("assets/characters/Champ.png",                    "Final Boss",     250, 25)
+};
+
 Game::Game() : Player1(nullptr), Enemy1(nullptr), IsEndTurnButtonSelected(false)
 {
     std::cout << "New Game\n";
@@ -22,8 +37,14 @@ Game::~Game()
 
 void Game::Init()
 {
-    Player1 = std::make_unique<Player>("Eu");
-    Enemy1 = std::make_unique<Enemy>("El");
+    // Load Font
+    if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
+    {
+        throw FontError("assets/fonts/PoppinsRegular.ttf");
+    }
+
+    Player1 = std::make_unique<Player>("assets/characters/Ironclad.png", "Eu");
+    Enemy1 = std::make_unique<Enemy>(LevelEnemy[CurrentLevel]->FilePath, LevelEnemy[CurrentLevel]->Name, LevelEnemy[CurrentLevel]->MaxHealth, 0, LevelEnemy[CurrentLevel]->MaxMove);
     IsEndTurnButtonSelected = false;
 
     // End Turn Button Norm + Hover
@@ -89,6 +110,17 @@ void Game::Init()
 
 void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
 {
+    if (e.type == sf::Event::Closed)
+    {
+        Window.close();
+        return;
+    }
+
+    if (EndGame)
+    {
+        return;
+    }
+
     // Update Cards/Items
     Player1->Update(sf::Mouse::getPosition(Window));
 
@@ -107,10 +139,6 @@ void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
 
     switch (e.type)
     {
-        case sf::Event::Closed:
-            Window.close();
-            break;
-
         case sf::Event::Resized:
             std::cout << "New width: " << Window.getSize().x << '\n'
                       << "New height: " << Window.getSize().y << '\n';
@@ -152,7 +180,45 @@ void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
 
 void Game::Update()
 {
+    if (EndGame)
+    {
+        return;
+    }
 
+    if (Player1->IsDead())
+    {
+        std::cout << "YOU DIED";
+        EndGame = true;
+    }
+
+    if (Enemy1->IsDead())
+    {
+        std::cout << LevelEnemy[CurrentLevel]->Name << " WAS DEFEATED\n";
+        CurrentLevel++;
+
+        if (CurrentLevel == LevelEnemy.size())
+        {
+            std::cout << "WINNER\n";
+            EndGame = true;
+        }
+        else
+        {
+            Enemy1 = std::make_unique<Enemy>(LevelEnemy[CurrentLevel]->FilePath, LevelEnemy[CurrentLevel]->Name, LevelEnemy[CurrentLevel]->MaxHealth, 0, LevelEnemy[CurrentLevel]->MaxMove);
+
+            // Set Enemy
+            Player1->SetCurrentEnemy(Enemy1.get());
+
+            // Set Enemy Attack
+            Enemy1->NewMove();
+
+            // Reset Player Energy + Cards
+            Player1->RegenerateFullEnergy();
+            Player1->NextCards();
+        }
+
+        int i = 1;
+        i++;
+    }
 }
 
 void Game::Draw(sf::RenderWindow& Window)
@@ -168,5 +234,31 @@ void Game::Draw(sf::RenderWindow& Window)
 
     // Draw Enemy
     Enemy1->Draw(Window);
+
+    // Draw VICTORY/DEFEAT screen
+    if (EndGame)
+    {
+        sf::Text EndGameText;
+        EndGameText.setFont(Font);
+        EndGameText.setCharacterSize(250);
+        EndGameText.setOutlineColor(sf::Color::Black);
+        EndGameText.setOutlineThickness(8.0f);
+
+        if (Player1->IsDead())
+        {
+            EndGameText.setString("DEFEAT");
+            EndGameText.setFillColor(sf::Color::Red);
+        }
+        else
+        {
+            EndGameText.setString("VICTORY");
+            EndGameText.setFillColor(sf::Color::Green);
+        }
+
+        float EndGameTextPosX = (1200.0f - EndGameText.getGlobalBounds().getSize().x) / 2.0f;
+        EndGameText.setPosition(sf::Vector2f(EndGameTextPosX, 200.0f));
+
+        Window.draw(EndGameText);
+    }
 }
 

@@ -26,7 +26,7 @@ protected:
 
 public:
 	/** Constructor */
-	explicit Character(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
+	explicit Character(const std::string& FilePath, const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
 
 	/** Copy Constructor */
 	explicit Character(const Character& other);
@@ -46,6 +46,7 @@ public:
 	/** Health */
 	void Heal(const unsigned int Amount);
 	void TakeDamage(unsigned int Damage);
+	inline bool IsDead() { return CurrentHealth == 0; }
 
 	/** Shield */
 	void IncreaseShield(const unsigned int Amount);
@@ -77,7 +78,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit Player(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0, const unsigned int MaxEnergy = 5);
+	explicit Player(const std::string& FilePath, const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0, const unsigned int MaxEnergy = 5);
 
 	/** Copy Constructor */
 	explicit Player(const Player& other);
@@ -130,6 +131,7 @@ class Enemy : public Character
 private:
 	EnemyMove NextMove;
 	unsigned int IncomingMove;
+	unsigned int MaxNextMove;
 
 	sf::Texture AttackTexture;
 	sf::Texture ShieldTexture;
@@ -137,7 +139,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit Enemy(const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0);
+	explicit Enemy(const std::string& FilePath, const std::string& Name = "None", const unsigned int MaxHealth = 100, const unsigned int Shield = 0, unsigned int MaxNextMove = 15);
 
 	/** Copy Constructor */
 	explicit Enemy(const Enemy& other);
@@ -160,5 +162,16 @@ public:
 
 protected:
 	void Print(std::ostream& os) const override;
+};
+
+struct EnemyInfo
+{
+	/** Constructor */
+	explicit EnemyInfo(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth = 100, const unsigned int MaxMove = 15)
+		: FilePath(FilePath), Name(Name), MaxHealth(MaxHealth), MaxMove(MaxMove)
+	{  }
+
+	std::string FilePath, Name;
+	unsigned int MaxHealth, MaxMove;
 };
 

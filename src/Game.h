@@ -7,6 +7,7 @@
 /** Forward Declarations */
 class Player;
 class Enemy;
+struct EnemyInfo;
 
 class Game
 {
@@ -32,6 +33,14 @@ private:
 
 	sf::Texture BackgroundTexture;
 	sf::Sprite BackgroundSprite;
+
+	/** Levels */
+	static bool EndGame;
+	static unsigned int CurrentLevel;
+	static const std::vector<std::shared_ptr<EnemyInfo>> LevelEnemy;
+
+	/** Font */
+	sf::Font Font;
 
 public:
 	/** Destructor */

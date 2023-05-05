@@ -43,6 +43,11 @@ int main()
         std::cout << err.what() << '\n';
         return -1;
     }
+    catch (...)
+    {
+        std::cout << "Other Errors \n";
+        return -1;
+    }
 
     // Render Loop
     while (window.isOpen())

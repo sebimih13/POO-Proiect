@@ -11,12 +11,20 @@
 ///////////////////////			Character			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-Character::Character(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
+Character::Character(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
 	: Name(Name), 
 	  MaxHealth(MaxHealth), CurrentHealth(MaxHealth),
 	  Shield(Shield)
 {
-	std::cout << "New Character\n";
+	std::cout << "New Character : " << Name << '\n';
+
+	// Load Character Texture
+	if (!CharacterTexture.loadFromFile(FilePath))      // TODO : Resource Manager
+	{
+		throw TextureError(FilePath);
+	}
+
+	CharacterSprite.setTexture(CharacterTexture);
 
 	// Load Font
 	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
@@ -37,7 +45,7 @@ Character::Character(const Character& other)
 
 Character::~Character()
 {
-	std::cout << "Destruct Character\n";
+	std::cout << "Destruct Character : " << Name << '\n';
 }
 
 Character& Character::operator = (const Character& other)
@@ -122,22 +130,22 @@ void Character::Print(std::ostream& os) const
 
 // Initialization of static const
 const std::vector<sf::Vector2f> Player::CardPosition = {
-		  sf::Vector2f(80.0f, 525.0f),
-		  sf::Vector2f(300.0f, 525.0f),
-		  sf::Vector2f(520.0f, 525.0f),
-		  sf::Vector2f(740.0f, 525.0f),
-		  sf::Vector2f(960.0f, 525.0f)
+	sf::Vector2f(80.0f, 525.0f),
+	sf::Vector2f(300.0f, 525.0f),
+	sf::Vector2f(520.0f, 525.0f),
+	sf::Vector2f(740.0f, 525.0f),
+	sf::Vector2f(960.0f, 525.0f)
 };
 
 const std::vector<sf::Vector2f> Player::ItemPosition = {
-		  sf::Vector2f(20.0f, 170.0f),
-		  sf::Vector2f(70.0f, 170.0f),
-		  sf::Vector2f(120.0f, 170.0f),
-		  sf::Vector2f(170.0f, 170.0f)
+	sf::Vector2f(20.0f, 170.0f),
+	sf::Vector2f(70.0f, 170.0f),
+	sf::Vector2f(120.0f, 170.0f),
+	sf::Vector2f(170.0f, 170.0f)
 };
 
-Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
-	: Character(Name, MaxHealth, Shield),
+Player::Player(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
+	: Character(FilePath, Name, MaxHealth, Shield),
 	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy),
 	  CurrentEnemy(nullptr)
 {
@@ -151,12 +159,7 @@ Player::Player(const std::string& Name, const unsigned int MaxHealth, const unsi
 
 	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
 
-	if (!CharacterTexture.loadFromFile("assets/characters/Ironclad.png"))      // TODO : Resource Manager
-	{
-		throw TextureError("assets/characters/Ironclad.png");
-	}
-
-	CharacterSprite.setTexture(CharacterTexture);
+	// Set Character Sprite Position
 	CharacterSprite.setPosition(sf::Vector2f(150.0f, 280.0f));
 }
 
@@ -482,20 +485,15 @@ void Player::Print(std::ostream& os) const
 ///////////////////////			Enemy				///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
-	: Character(Name, MaxHealth, Shield), NextMove(EnemyMove::None), IncomingMove(0)
+Enemy::Enemy(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, unsigned int MaxNextMove)
+	: Character(FilePath, Name, MaxHealth, Shield), NextMove(EnemyMove::None), IncomingMove(0), MaxNextMove(MaxNextMove)
 {
 	std::cout << "New Enemy\n";
 
-	// Load Textures
-	if (!CharacterTexture.loadFromFile("assets/characters/GremlinLeader.png"))  // TODO : Resource Manager
-	{
-		throw TextureError("assets/characters/GremlinLeader.png");
-	}
-
-	CharacterSprite.setTexture(CharacterTexture);
+	// Set Character Sprite Position
 	CharacterSprite.setPosition(sf::Vector2f(600.0f, 250.0f));
 
+	// Load Textures
 	if (!AttackTexture.loadFromFile("assets/others/attack.png"))  // TODO : Resource Manager
 	{
 		throw TextureError("assets/others/attack.png");
@@ -516,7 +514,7 @@ Enemy::Enemy(const std::string& Name, const unsigned int MaxHealth, const unsign
 
 Enemy::Enemy(const Enemy& other)
 	: Character(other),
-	  NextMove(other.NextMove), IncomingMove(other.IncomingMove),
+	  NextMove(other.NextMove), IncomingMove(other.IncomingMove), MaxNextMove(other.MaxNextMove),
 	  AttackTexture(other.AttackTexture), ShieldTexture(other.ShieldTexture), NextMoveSprite(other.NextMoveSprite)
 {
 
@@ -533,6 +531,7 @@ Enemy& Enemy::operator = (const Enemy& other)
 
 	NextMove = other.NextMove;
 	IncomingMove = other.IncomingMove;
+	MaxNextMove = other.MaxNextMove;
 
 	AttackTexture = other.AttackTexture;
 	ShieldTexture = other.ShieldTexture;
@@ -642,7 +641,7 @@ void Enemy::NewMove()
 		NextMove = EnemyMove::Shield;
 	}
 
-	IncomingMove = 1 + rand() % 15;
+	IncomingMove = 1 + rand() % MaxNextMove;
 }
 
 unsigned int Enemy::GetIncomingAttack()
