@@ -14,11 +14,11 @@ bool Game::EndGame = false;
 unsigned int Game::CurrentLevel = 0;
 
 const std::vector<std::shared_ptr<EnemyInfo>> Game::LevelEnemy = {
-    std::make_shared<EnemyInfo>("assets/characters/GremlinLeader.png",            "Gremlin",        50, 5),
-    std::make_shared<EnemyInfo>("assets/characters/Book-of-stabbing-pretty.png",  "Book",           60, 5),
-    std::make_shared<EnemyInfo>("assets/characters/Donu.png",                     "Donut",          70, 10),
-    std::make_shared<EnemyInfo>("assets/characters/Slaver-blue-pretty.png",       "Man",            80, 10),
-    std::make_shared<EnemyInfo>("assets/characters/slime.png",                    "Slime",          90, 15),
+    std::make_shared<EnemyInfo>("assets/characters/GremlinLeader.png",            "Gremlin",        50,  5),
+    std::make_shared<EnemyInfo>("assets/characters/Book-of-stabbing-pretty.png",  "Book",           60,  5),
+    std::make_shared<EnemyInfo>("assets/characters/Donu.png",                     "Donut",          70,  10),
+    std::make_shared<EnemyInfo>("assets/characters/Slaver-blue-pretty.png",       "Man",            80,  10),
+    std::make_shared<EnemyInfo>("assets/characters/slime.png",                    "Slime",          90,  15),
     std::make_shared<EnemyInfo>("assets/characters/Spheric-guardian-pretty.png",  "Guardian",       100, 15),
     std::make_shared<EnemyInfo>("assets/characters/TheCollector.png",             "Collector",      110, 20),
     std::make_shared<EnemyInfo>("assets/characters/Time-eater-pretty.png",        "Time",           120, 20),
