@@ -321,13 +321,13 @@ void Player::Draw(sf::RenderWindow& Window)
 void Player::Update(const sf::Vector2i& MousePosition)
 {
 	// Update Cards
-	for (std::shared_ptr<Card> const c : Cards)
+	for (std::shared_ptr<Card> const& c : Cards)
 	{
 		c->Update(MousePosition);
 	}
 	
 	// Update Items
-	for (std::shared_ptr<Item> const i : Items)
+	for (std::shared_ptr<Item> const& i : Items)
 	{
 		i->Update(MousePosition);
 	}
