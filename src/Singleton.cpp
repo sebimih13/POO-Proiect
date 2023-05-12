@@ -20,5 +20,5 @@ template
 class Singleton<ResourceManager>;
 
 template
-Game Singleton<Game>::Instance;
+ResourceManager Singleton<ResourceManager>::Instance;
 
