@@ -13,19 +13,7 @@ Game Game::Instance;
 bool Game::EndGame = false;
 unsigned int Game::CurrentLevel = 0;
 
-const std::vector<std::shared_ptr<EnemyInfo>> Game::LevelEnemy = {
-    std::make_shared<EnemyInfo>("assets/characters/GremlinLeader.png",            "Gremlin",        50,  5),
-    std::make_shared<EnemyInfo>("assets/characters/Book-of-stabbing-pretty.png",  "Book",           60,  5),
-    std::make_shared<EnemyInfo>("assets/characters/Donu.png",                     "Donut",          70,  10),
-    std::make_shared<EnemyInfo>("assets/characters/Slaver-blue-pretty.png",       "Man",            80,  10),
-    std::make_shared<EnemyInfo>("assets/characters/slime.png",                    "Slime",          90,  15),
-    std::make_shared<EnemyInfo>("assets/characters/Spheric-guardian-pretty.png",  "Guardian",       100, 15),
-    std::make_shared<EnemyInfo>("assets/characters/TheCollector.png",             "Collector",      110, 20),
-    std::make_shared<EnemyInfo>("assets/characters/Time-eater-pretty.png",        "Time",           120, 20),
-    std::make_shared<EnemyInfo>("assets/characters/Champ.png",                    "Final Boss",     150, 25)
-};
-
-Game::Game() : Player1(nullptr), Enemy1(nullptr), IsEndTurnButtonSelected(false)
+Game::Game() : Player1(nullptr), Enemy1(nullptr), IsEndTurnButtonSelected(false), MaxLevel(9)
 {
     std::cout << "New Game\n";
 }
@@ -43,9 +31,8 @@ void Game::Init()
         throw FontError("assets/fonts/PoppinsRegular.ttf");
     }
 
-    Player1 = std::make_unique<Player>("assets/characters/Ironclad.png", "Eu");
-    Enemy1 = std::make_unique<Enemy>(LevelEnemy[CurrentLevel]->FilePath, LevelEnemy[CurrentLevel]->Name, LevelEnemy[CurrentLevel]->MaxHealth, 0, LevelEnemy[CurrentLevel]->MaxMove);
-    IsEndTurnButtonSelected = false;
+    Player1 = std::make_shared<Player>("assets/characters/Ironclad.png", "Eu");
+    Enemy1 = GetNextEnemy();
 
     // End Turn Button Norm + Hover
     if (!EndTurnNormTexture.loadFromFile("assets/others/endTurnButtonNorm.png"))     // TODO : ResourceManager
@@ -76,28 +63,27 @@ void Game::Init()
     std::cout << *Player1 << '\n';
 
     // Change stats
-    Player1->ConsumeEnergy(4);
+    Player1->ConsumeEnergy(1);
     Player1->RegenerateEnergy(1);
-    Player1->TakeDamage(20);
 
     // Cards
-    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
-    Player1->AddCard(new DamageCard(6, "assets/cards/Strike.png", "Strike", "Deal 10 damage", 1));
-    Player1->AddCard(new DamageCard(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
-    Player1->AddCard(new ShieldCard(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
-    Player1->AddCard(new ShieldCard(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
+    Player1->AddCard(std::make_shared<DamageCard>(6, "assets/cards/Strike.png", "Strike", "Deal 6 damage", 1));
+    Player1->AddCard(std::make_shared<DamageCard>(6, "assets/cards/Strike.png", "Strike", "Deal 6 damage", 1));
+    Player1->AddCard(std::make_shared<DamageCard>(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
+    Player1->AddCard(std::make_shared<ShieldCard>(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
+    Player1->AddCard(std::make_shared<ShieldCard>(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
 
     // Items
-    Player1->AddItem(new HealthPotion(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
-    Player1->AddItem(new BlockPotion(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
-    Player1->AddItem(new FullEnergyPotion("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
-    Player1->AddItem(new MaxHealthPotion(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
+    Player1->AddItem(std::make_shared<HealthPotion>(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
+    Player1->AddItem(std::make_shared<BlockPotion>(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
+    Player1->AddItem(std::make_shared<FullEnergyPotion>("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
+    Player1->AddItem(std::make_shared<MaxHealthPotion>(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
 
     // Print new stats
     std::cout << *Player1 << '\n';
 
     // Enemy
-    Player1->SetCurrentEnemy(Enemy1.get());
+    Player1->SetCurrentEnemy(Enemy1);
 
     // Set Enemy Attack
     Enemy1->NewMove();
@@ -193,20 +179,20 @@ void Game::Update()
 
     if (Enemy1->IsDead())
     {
-        std::cout << LevelEnemy[CurrentLevel]->Name << " WAS DEFEATED\n";
+        std::cout << Enemy1->GetName() << " WAS DEFEATED\n";
         CurrentLevel++;
 
-        if (CurrentLevel == LevelEnemy.size())
+        if (CurrentLevel == MaxLevel)
         {
             std::cout << "WINNER\n";
             EndGame = true;
         }
         else
         {
-            Enemy1 = std::make_unique<Enemy>(LevelEnemy[CurrentLevel]->FilePath, LevelEnemy[CurrentLevel]->Name, LevelEnemy[CurrentLevel]->MaxHealth, 0, LevelEnemy[CurrentLevel]->MaxMove);
+            Enemy1 = GetNextEnemy();
 
             // Set Enemy
-            Player1->SetCurrentEnemy(Enemy1.get());
+            Player1->SetCurrentEnemy(Enemy1);
 
             // Set Enemy Attack
             Enemy1->NewMove();
@@ -256,6 +242,24 @@ void Game::Draw(sf::RenderWindow& Window)
         EndGameText.setPosition(sf::Vector2f(EndGameTextPosX, 200.0f));
 
         Window.draw(EndGameText);
+    }
+}
+
+std::shared_ptr<Enemy> Game::GetNextEnemy()
+{
+    switch (CurrentLevel)
+    {
+        case 0: return EnemyFactory::Gremlin();     break;
+        case 1: return EnemyFactory::Book();        break;
+        case 2: return EnemyFactory::Donut();       break;
+        case 3: return EnemyFactory::Man();         break;
+        case 4: return EnemyFactory::Slime();       break;
+        case 5: return EnemyFactory::Guardian();    break;
+        case 6: return EnemyFactory::Collector();   break;
+        case 7: return EnemyFactory::Time();        break;
+        case 8: return EnemyFactory::FinalBoss();   break;
+
+        default: return EnemyFactory::Gremlin();    break;
     }
 }
 

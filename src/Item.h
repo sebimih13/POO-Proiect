@@ -36,7 +36,7 @@ public:
 	friend std::ostream& operator << (std::ostream& os, const Item& i);
 
 	/** Clone - Virtual Constructor */
-	virtual Item* Clone() const = 0;
+	virtual std::shared_ptr<Item> Clone() const = 0;
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale = sf::Vector2f(1.0f, 1.0f));
@@ -45,7 +45,7 @@ public:
 	void Update(const sf::Vector2i& MousePosition);
 
 	/** Use Item */
-	virtual void Use(Player* Owner) = 0;
+	virtual void Use(Player* const Owner) = 0;
 
 	/** Getters */
 	inline bool GetIsSelected() const { return IsSelected; }
@@ -73,10 +73,10 @@ public:
 	HealthPotion& operator = (const HealthPotion& other);
 
 	/** Clone - Virtual Constructor */
-	Item* Clone() const override;
+	std::shared_ptr<Item> Clone() const override;
 
 	/** Use Item */
-	void Use(Player* Owner) override;
+	void Use(Player* const Owner) override;
 
 protected:
 	void Print(std::ostream& os) const override;
@@ -101,10 +101,10 @@ public:
 	BlockPotion& operator = (const BlockPotion& other);
 
 	/** Clone - Virtual Constructor */
-	Item* Clone() const override;
+	std::shared_ptr<Item> Clone() const override;
 
 	/** Use Item */
-	void Use(Player* Owner) override;
+	void Use(Player* const Owner) override;
 
 protected:
 	void Print(std::ostream& os) const override;
@@ -126,10 +126,10 @@ public:
 	FullEnergyPotion& operator = (const FullEnergyPotion& other);
 
 	/** Clone - Virtual Constructor */
-	Item* Clone() const override;
+	std::shared_ptr<Item> Clone() const override;
 
 	/** Use Item */
-	void Use(Player* Owner) override;
+	void Use(Player* const Owner) override;
 };
 
 class MaxHealthPotion : public Item
@@ -151,10 +151,10 @@ public:
 	MaxHealthPotion& operator = (const MaxHealthPotion& other);
 
 	/** Clone - Virtual Constructor */
-	Item* Clone() const override;
+	std::shared_ptr<Item> Clone() const override;
 
 	/** Use Item */
-	void Use(Player* Owner) override;
+	void Use(Player* const Owner) override;
 
 protected:
 	void Print(std::ostream& os) const override;

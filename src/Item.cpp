@@ -142,12 +142,12 @@ HealthPotion& HealthPotion::operator = (const HealthPotion& other)
 	return *this;
 }
 
-Item* HealthPotion::Clone() const
+std::shared_ptr<Item> HealthPotion::Clone() const
 {
-	return new HealthPotion(*this);
+	return std::make_shared<HealthPotion>(*this);
 }
 
-void HealthPotion::Use(Player* Owner)
+void HealthPotion::Use(Player* const Owner)
 {
 	Owner->Heal(HP);
 }
@@ -191,12 +191,12 @@ BlockPotion& BlockPotion::operator = (const BlockPotion& other)
 	return *this;
 }
 
-Item* BlockPotion::Clone() const
+std::shared_ptr<Item> BlockPotion::Clone() const
 {
-	return new BlockPotion(*this);
+	return std::make_shared<BlockPotion>(*this);
 }
 
-void BlockPotion::Use(Player* Owner)
+void BlockPotion::Use(Player* const Owner)
 {
 	Owner->IncreaseShield(Block);
 }
@@ -236,12 +236,12 @@ FullEnergyPotion& FullEnergyPotion::operator = (const FullEnergyPotion& other)
 	return *this;
 }
 
-Item* FullEnergyPotion::Clone() const
+std::shared_ptr<Item> FullEnergyPotion::Clone() const
 {
-	return new FullEnergyPotion(*this);
+	return std::make_shared<FullEnergyPotion>(*this);
 }
 
-void FullEnergyPotion::Use(Player* Owner)
+void FullEnergyPotion::Use(Player* const Owner)
 {
 	Owner->RegenerateFullEnergy();
 }
@@ -278,12 +278,12 @@ MaxHealthPotion& MaxHealthPotion::operator = (const MaxHealthPotion& other)
 	return *this;
 }
 
-Item* MaxHealthPotion::Clone() const
+std::shared_ptr<Item> MaxHealthPotion::Clone() const
 {
-	return new MaxHealthPotion(*this);
+	return std::make_shared<MaxHealthPotion>(*this);
 }
 
-void MaxHealthPotion::Use(Player* Owner)
+void MaxHealthPotion::Use(Player* const Owner)
 {
 	Owner->IncreaseMaxHealth(HP);
 }

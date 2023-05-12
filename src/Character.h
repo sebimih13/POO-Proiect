@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
@@ -51,6 +52,9 @@ public:
 	/** Shield */
 	void IncreaseShield(const unsigned int Amount);
 
+	/** Getters */
+	inline const std::string& GetName() { return Name; }
+
 protected:
 	virtual void Print(std::ostream& os) const;
 };
@@ -60,13 +64,13 @@ class Player : public Character
 private:
 	unsigned int MaxEnergy, CurrentEnergy;
 
-	Enemy* CurrentEnemy;
+	std::shared_ptr<Enemy> CurrentEnemy;
 
-	std::vector<Card*> CardDeck;
-	std::vector<Card*> Cards;
-	std::vector<Card*> UnusedCards;
+	std::vector<std::shared_ptr<Card>> CardDeck;
+	std::vector<std::shared_ptr<Card>> Cards;
+	std::vector<std::shared_ptr<Card>> UnusedCards;
 
-	std::vector<Item*> Items;
+	std::vector<std::shared_ptr<Item>> Items;
 
 	sf::Texture EnergyBackgroundTexture;
 	sf::Sprite EnergyBackgroundSprite;
@@ -107,13 +111,13 @@ public:
 	void ConsumeEnergy(const unsigned int Amount);
 
 	/** Cards/Items Funtions */
-	void AddCard(Card* const NewCard);
-	void AddItem(Item* const NewItem);
+	void AddCard(std::shared_ptr<Card> const NewCard);
+	void AddItem(std::shared_ptr<Item> const NewItem);
 
 	void NextCards();
 
 	/** Setters */
-	inline void SetCurrentEnemy(Enemy* const NewEnemy) { CurrentEnemy = NewEnemy; }
+	inline void SetCurrentEnemy(std::shared_ptr<Enemy> const NewEnemy) { CurrentEnemy = NewEnemy; }
 
 protected:
 	void Print(std::ostream& os) const override;
@@ -164,14 +168,17 @@ protected:
 	void Print(std::ostream& os) const override;
 };
 
-struct EnemyInfo
+class EnemyFactory
 {
-	/** Constructor */
-	explicit EnemyInfo(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth = 100, const unsigned int MaxMove = 15)
-		: FilePath(FilePath), Name(Name), MaxHealth(MaxHealth), MaxMove(MaxMove)
-	{  }
-
-	std::string FilePath, Name;
-	unsigned int MaxHealth, MaxMove;
+public:
+	static std::shared_ptr<Enemy> Gremlin()		{ return std::make_shared<Enemy>("assets/characters/GremlinLeader.png", "Gremlin", 50, 5); }
+	static std::shared_ptr<Enemy> Book()		{ return std::make_shared<Enemy>("assets/characters/Book-of-stabbing-pretty.png", "Book", 60, 5); }
+	static std::shared_ptr<Enemy> Donut()		{ return std::make_shared<Enemy>("assets/characters/Donu.png", "Donut", 70, 10); }
+	static std::shared_ptr<Enemy> Man()			{ return std::make_shared<Enemy>("assets/characters/Slaver-blue-pretty.png", "Man", 80, 10); }
+	static std::shared_ptr<Enemy> Slime()		{ return std::make_shared<Enemy>("assets/characters/slime.png", "Slime", 90, 15); }
+	static std::shared_ptr<Enemy> Guardian()	{ return std::make_shared<Enemy>("assets/characters/Spheric-guardian-pretty.png", "Guardian", 100, 15); }
+	static std::shared_ptr<Enemy> Collector()	{ return std::make_shared<Enemy>("assets/characters/TheCollector.png", "Collector", 110, 20); }
+	static std::shared_ptr<Enemy> Time()		{ return std::make_shared<Enemy>("assets/characters/Time-eater-pretty.png", "Time", 120, 20); }
+	static std::shared_ptr<Enemy> FinalBoss()	{ return std::make_shared<Enemy>("assets/characters/Champ.png", "Final Boss", 150, 25); }
 };
 

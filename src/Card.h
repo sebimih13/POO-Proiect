@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
@@ -39,7 +40,7 @@ public:
 	friend std::ostream& operator << (std::ostream& os, const Card& c);
 
 	/** Clone - Virtual Constructor */
-	virtual Card* Clone() const = 0;
+	virtual std::shared_ptr<Card> Clone() const = 0;
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale = sf::Vector2f(0.3f, 0.3f));
@@ -50,10 +51,6 @@ public:
 	/** Getters */
 	inline bool GetIsSelected() const { return IsSelected; }
 	inline unsigned int GetEnergy() const { return EnergyCost; }
-
-	/** Get string based on enum type */
-	//static const std::string GetType(const CardType Type);
-	//static const std::string GetRarity(const CardRarity Rarity);
 
 protected:
 	virtual void Print(std::ostream& os) const;
@@ -78,9 +75,9 @@ public:
 	DamageCard& operator = (const DamageCard& other);
 
 	/** Clone - Virtual Constructor */
-	Card* Clone() const override;
+	std::shared_ptr<Card> Clone() const override;
 
-	void Use(Enemy* CurrentEnemy);
+	void Use(Enemy* const CurrentEnemy);
 
 protected:
 	void Print(std::ostream& os) const override;
@@ -105,9 +102,9 @@ public:
 	ShieldCard& operator = (const ShieldCard& other);
 
 	/** Clone - Virtual Constructor */
-	Card* Clone() const override;
+	std::shared_ptr<Card> Clone() const override;
 
-	void Use(Player* CurrentPlayer);
+	void Use(Player* const CurrentPlayer);
 
 protected:
 	void Print(std::ostream& os) const override;

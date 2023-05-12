@@ -143,12 +143,12 @@ DamageCard& DamageCard::operator = (const DamageCard& other)
 	return *this;
 }
 
-Card* DamageCard::Clone() const
+std::shared_ptr<Card> DamageCard::Clone() const
 {
-	return new DamageCard(*this);
+	return std::make_shared<DamageCard>(*this);
 }
 
-void DamageCard::Use(Enemy* CurrentEnemy)
+void DamageCard::Use(Enemy* const CurrentEnemy)
 {
 	CurrentEnemy->TakeDamage(Damage);
 }
@@ -192,12 +192,12 @@ ShieldCard& ShieldCard::operator = (const ShieldCard& other)
 	return *this;
 }
 
-Card* ShieldCard::Clone() const
+std::shared_ptr<Card> ShieldCard::Clone() const
 {
-	return new ShieldCard(*this);
+	return std::make_shared<ShieldCard>(*this);
 }
 
-void ShieldCard::Use(Player* CurrentPlayer)
+void ShieldCard::Use(Player* const CurrentPlayer)
 {
 	CurrentPlayer->IncreaseShield(Block);
 }

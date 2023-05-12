@@ -18,10 +18,10 @@ private:
 	static Game Instance;
 
 	/** Player */
-	std::unique_ptr<Player> Player1;
+	std::shared_ptr<Player> Player1;
 
 	/** Enemy */
-	std::unique_ptr<Enemy> Enemy1;
+	std::shared_ptr<Enemy> Enemy1;
 
 	/** End Turn Button */
 	bool IsEndTurnButtonSelected;
@@ -35,9 +35,11 @@ private:
 	sf::Sprite BackgroundSprite;
 
 	/** Levels */
-	static bool EndGame;
+	const unsigned int MaxLevel;
 	static unsigned int CurrentLevel;
-	static const std::vector<std::shared_ptr<EnemyInfo>> LevelEnemy;
+	static bool EndGame;
+
+	std::shared_ptr<Enemy> GetNextEnemy();
 
 	/** Font */
 	sf::Font Font;

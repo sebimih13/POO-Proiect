@@ -40,7 +40,7 @@ Character::Character(const Character& other)
 	  CharacterTexture(other.CharacterTexture), CharacterSprite(other.CharacterSprite),
 	  Font(other.Font)
 {
-
+	CharacterSprite.setTexture(CharacterTexture);
 } 
 
 Character::~Character()
@@ -169,22 +169,24 @@ Player::Player(const Player& other)
 	  CurrentEnemy(other.CurrentEnemy),
 	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
-	for (Card* c : other.CardDeck)
+	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+
+	for (std::shared_ptr<Card> c : other.CardDeck)
 	{
 		CardDeck.push_back(c->Clone());
 	}
 
-	for (Card* c : other.Cards)
+	for (std::shared_ptr<Card> c : other.Cards)
 	{
 		Cards.push_back(c->Clone());
 	}
 
-	for (Card* c : other.UnusedCards)
+	for (std::shared_ptr<Card> c : other.UnusedCards)
 	{
 		UnusedCards.push_back(c->Clone());
 	}
 
-	for (Item* i : other.Items)
+	for (std::shared_ptr<Item> i : other.Items)
 	{
 		Items.push_back(i->Clone());
 	}
@@ -192,18 +194,13 @@ Player::Player(const Player& other)
 
 Player::~Player()
 {
-	for (unsigned int i = 0; i < Items.size(); i++)
-	{
-		delete Items[i];
-	}
+	std::cout << "Destruct Player\n";
 
+	Items.clear();
+
+	CardDeck.clear();
 	Cards.clear();
 	UnusedCards.clear();
-
-	for (unsigned int i = 0; i < CardDeck.size(); i++)
-	{
-		delete CardDeck[i];
-	}
 }
 
 Player& Player::operator = (const Player& other)
@@ -215,28 +212,33 @@ Player& Player::operator = (const Player& other)
 
 	CurrentEnemy = other.CurrentEnemy;
 
-	for (Card* c : other.CardDeck)
+	CardDeck.clear();
+	for (std::shared_ptr<Card> c : other.CardDeck)
 	{
 		CardDeck.push_back(c->Clone());
 	}
 
-	for (Card* c : other.Cards)
+	Cards.clear();
+	for (std::shared_ptr<Card> c : other.Cards)
 	{
 		Cards.push_back(c->Clone());
 	}
 
-	for (Card* c : other.UnusedCards)
+	UnusedCards.clear();
+	for (std::shared_ptr<Card> c : other.UnusedCards)
 	{
 		UnusedCards.push_back(c->Clone());
 	}
 
-	for (Item* i : other.Items)
+	Items.clear();
+	for (std::shared_ptr<Item> i : other.Items)
 	{
 		Items.push_back(i->Clone());
 	}
 
 	EnergyBackgroundTexture = other.EnergyBackgroundTexture;
 	EnergyBackgroundSprite = other.EnergyBackgroundSprite;
+	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
 
 	return *this;
 }
@@ -274,7 +276,7 @@ void Player::Draw(sf::RenderWindow& Window)
 	ShieldText.setFont(Font);
 	ShieldText.setString("Shield " + std::to_string(Shield));
 	ShieldText.setCharacterSize(24);
-	ShieldText.setFillColor(sf::Color::Blue);
+	ShieldText.setFillColor(sf::Color::Cyan);
 
 	float ShieldTextPosX = 20.0f;
 	float ShieldTextPosY = HealthText.getGlobalBounds().getPosition().y + HealthText.getGlobalBounds().height + 20.0f;
@@ -319,13 +321,13 @@ void Player::Draw(sf::RenderWindow& Window)
 void Player::Update(const sf::Vector2i& MousePosition)
 {
 	// Update Cards
-	for (Card* const c : Cards)
+	for (std::shared_ptr<Card> const c : Cards)
 	{
 		c->Update(MousePosition);
 	}
 	
 	// Update Items
-	for (Item* const i : Items)
+	for (std::shared_ptr<Item> const i : Items)
 	{
 		i->Update(MousePosition);
 	}
@@ -339,17 +341,17 @@ void Player::Select()
 		if (Cards[i]->GetIsSelected() && CurrentEnergy >= Cards[i]->GetEnergy())	// TODO : functie separata pt: CurrentEnergy >= Cards[i]->GetEnergy()
 		{
 			// Dynamic Cast
-			if (DamageCard* Card = dynamic_cast<DamageCard*>(Cards[i]))
+			if (std::shared_ptr<DamageCard> Card = std::dynamic_pointer_cast<DamageCard>(Cards[i]))
 			{
 				std::cout << "DamageCard : cast pointer reusit\n";
-				Card->Use(CurrentEnemy);
+				Card->Use(CurrentEnemy.get());
 			}
 			else
 			{
 				std::cout << "DamageCard : cast pointer nereusit\n";
 			}
 
-			if (ShieldCard* Card = dynamic_cast<ShieldCard*>(Cards[i]))
+			if (std::shared_ptr<ShieldCard> Card = std::dynamic_pointer_cast<ShieldCard>(Cards[i]))
 			{
 				std::cout << "ShieldCard : cast pointer reusit\n";
 				Card->Use(this);
@@ -370,7 +372,6 @@ void Player::Select()
 		if (Items[i]->GetIsSelected())
 		{
 			Items[i]->Use(this);
-			delete Items[i];
 			Items.erase(Items.begin() + i);
 		}
 	}
@@ -410,21 +411,18 @@ void Player::ConsumeEnergy(const unsigned int Amount)
 	}
 }
 
-void Player::AddCard(Card* const NewCard)
+void Player::AddCard(std::shared_ptr<Card> const NewCard)
 {
 	CardDeck.push_back(NewCard);
 }
 
-void Player::AddItem(Item* const NewItem)
+void Player::AddItem(std::shared_ptr<Item> const NewItem)
 {
 	Items.push_back(NewItem);
 }
 
 void Player::ShuffleCards()
 {
-	// Random seed
-	srand(time(0));
-
 	UnusedCards = CardDeck;
 
 	for (unsigned int i = 0; i < UnusedCards.size(); i++)
@@ -507,9 +505,6 @@ Enemy::Enemy(const std::string& FilePath, const std::string& Name, const unsigne
 	float AttackSpritePosX = CharacterSprite.getGlobalBounds().getPosition().x + CharacterSprite.getGlobalBounds().getSize().x / 2.0f - AttackTexture.getSize().x / 2.0f;
 	float AttackSpritePosY = CharacterSprite.getGlobalBounds().getPosition().y - 150.0f;
 	NextMoveSprite.setPosition(sf::Vector2f(AttackSpritePosX, AttackSpritePosY));
-
-	// Set random seed
-	srand(time(0));
 }
 
 Enemy::Enemy(const Enemy& other)
@@ -604,7 +599,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 	ShieldText.setFont(Font);
 	ShieldText.setString("Shield " + std::to_string(Shield));
 	ShieldText.setCharacterSize(24);
-	ShieldText.setFillColor(sf::Color::Blue);
+	ShieldText.setFillColor(sf::Color::Cyan);
 
 	float ShieldTextPosX = 1000.0f;
 	float ShieldTextPosY = HealthText.getGlobalBounds().getPosition().y + HealthText.getGlobalBounds().height + 20.0f;

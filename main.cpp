@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -23,6 +24,9 @@ int main()
     window.create(sf::VideoMode({1200, 800}), "Card Game", sf::Style::Default);
     window.setVerticalSyncEnabled(true);
     //window.setFramerateLimit(60);
+
+    // Random seed
+    srand(time(0));
 
     try
     {
