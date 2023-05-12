@@ -10,12 +10,15 @@ T Singleton<T>::Instance;
 template
 class Singleton<Game>;
 
-//template
-//Game Singleton<Game>::Instance;
+template
+Game Singleton<Game>::Instance;
 
 
 #include "ResourceManager.h"
 
 template
 class Singleton<ResourceManager>;
+
+template
+Game Singleton<Game>::Instance;
 
