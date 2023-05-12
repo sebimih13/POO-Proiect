@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "src/Game.h"
+#include "src/ResourceManager.h"
 #include "src/ExceptionHierarchy.h"
 
 #ifdef __linux__
@@ -30,6 +31,7 @@ int main()
 
     try
     {
+        ResourceManager::GetInstance().Init();
         Game::GetInstance().Init();
     }
     catch (TextureError& err)

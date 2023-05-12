@@ -11,18 +11,17 @@ class Player;
 class Item
 {
 private:
-	std::string FilePath;
+	std::string TextureName;
 	std::string Name;
 	std::string Description;
 
 	bool IsSelected;
 
-	sf::Texture Texture;
 	sf::Sprite Sprite;
 
 public:
 	/** Constructor */
-	explicit Item(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+	explicit Item(const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
 	explicit Item(const Item& other);
@@ -62,7 +61,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit HealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+	explicit HealthPotion(const unsigned int HP, const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
 	explicit HealthPotion(const HealthPotion& other);
@@ -90,7 +89,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit BlockPotion(const unsigned int Block, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+	explicit BlockPotion(const unsigned int Block, const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
 	explicit BlockPotion(const BlockPotion& other);
@@ -115,7 +114,7 @@ class FullEnergyPotion : public Item
 {
 public:
 	/** Constructor */
-	explicit FullEnergyPotion(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+	explicit FullEnergyPotion(const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
 	explicit FullEnergyPotion(const FullEnergyPotion& other);
@@ -140,7 +139,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit MaxHealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None");
+	explicit MaxHealthPotion(const unsigned int HP, const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None");
 
 	/** Copy Constructor */
 	explicit MaxHealthPotion(const MaxHealthPotion& other);

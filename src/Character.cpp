@@ -3,6 +3,7 @@
 #include "Card.h"
 #include "Item.h"
 #include "ExceptionHierarchy.h"
+#include "ResourceManager.h"
 
 #include <iostream>
 #include <random>
@@ -11,36 +12,24 @@
 ///////////////////////			Character			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-Character::Character(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
+Character::Character(const std::string& TextureName, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield)
 	: Name(Name), 
 	  MaxHealth(MaxHealth), CurrentHealth(MaxHealth),
 	  Shield(Shield)
 {
 	std::cout << "New Character : " << Name << '\n';
 
-	// Load Character Texture
-	if (!CharacterTexture.loadFromFile(FilePath))      // TODO : Resource Manager
-	{
-		throw TextureError(FilePath);
-	}
-
-	CharacterSprite.setTexture(CharacterTexture);
-
-	// Load Font
-	if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
-	{
-		throw FontError("assets/fonts/PoppinsRegular.ttf");
-	}
+	// Set Sprites
+	CharacterSprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));
 }
 
 Character::Character(const Character& other)
 	: Name(other.Name),
 	  MaxHealth(other.MaxHealth), CurrentHealth(other.CurrentHealth),
 	  Shield(other.Shield),
-	  CharacterTexture(other.CharacterTexture), CharacterSprite(other.CharacterSprite),
-	  Font(other.Font)
+	  CharacterSprite(other.CharacterSprite)
 {
-	CharacterSprite.setTexture(CharacterTexture);
+	// CharacterSprite.setTexture(ResourceManager::GetInstance().GetTexture(other.TextureName)); // TODO : mai trb?
 } 
 
 Character::~Character()
@@ -57,11 +46,8 @@ Character& Character::operator = (const Character& other)
 
 	Shield = other.Shield;
 
-	CharacterTexture = other.CharacterTexture;
 	CharacterSprite = other.CharacterSprite;
-	CharacterSprite.setTexture(CharacterTexture);
-
-	Font = other.Font;
+	// CharacterSprite.setTexture(ResourceManager::GetInstance().GetTexture(other.TextureName)); // TODO : mai trb?
 
 	return *this;
 }
@@ -144,20 +130,15 @@ const std::vector<sf::Vector2f> Player::ItemPosition = {
 	sf::Vector2f(170.0f, 170.0f)
 };
 
-Player::Player(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
-	: Character(FilePath, Name, MaxHealth, Shield),
+Player::Player(const std::string& TextureName, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, const unsigned int MaxEnergy)
+	: Character(TextureName, Name, MaxHealth, Shield),
 	  MaxEnergy(MaxEnergy), CurrentEnergy(MaxEnergy),
 	  CurrentEnemy(nullptr)
 {
 	std::cout << "New Player\n";
 
-	// Load Textures
-	if (!EnergyBackgroundTexture.loadFromFile("assets/others/EnergyBackground.png"))		// TODO : ResourceManager
-	{
-		throw TextureError("assets/others/EnergyBackground.png");
-	}
-
-	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+	// Set Sprites
+	EnergyBackgroundSprite.setTexture(ResourceManager::GetInstance().GetTexture("EnergyBackground"));
 
 	// Set Character Sprite Position
 	CharacterSprite.setPosition(sf::Vector2f(150.0f, 280.0f));
@@ -167,9 +148,9 @@ Player::Player(const Player& other)
 	: Character(other),
 	  MaxEnergy(other.MaxEnergy), CurrentEnergy(other.CurrentEnergy),
 	  CurrentEnemy(other.CurrentEnemy),
-	  EnergyBackgroundTexture(other.EnergyBackgroundTexture), EnergyBackgroundSprite(other.EnergyBackgroundSprite)
+	  EnergyBackgroundSprite(other.EnergyBackgroundSprite)
 {
-	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+	EnergyBackgroundSprite.setTexture(ResourceManager::GetInstance().GetTexture("EnergyBackground"));
 
 	for (std::shared_ptr<Card> c : other.CardDeck)
 	{
@@ -236,9 +217,8 @@ Player& Player::operator = (const Player& other)
 		Items.push_back(i->Clone());
 	}
 
-	EnergyBackgroundTexture = other.EnergyBackgroundTexture;
 	EnergyBackgroundSprite = other.EnergyBackgroundSprite;
-	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+	EnergyBackgroundSprite.setTexture(ResourceManager::GetInstance().GetTexture("EnergyBackground"));
 
 	return *this;
 }
@@ -250,7 +230,7 @@ void Player::Draw(sf::RenderWindow& Window)
 
 	// Draw Name
 	sf::Text NameText;
-	NameText.setFont(Font);
+	NameText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	NameText.setString(Name);
 	NameText.setCharacterSize(24);
 	NameText.setFillColor(sf::Color::White);
@@ -260,7 +240,7 @@ void Player::Draw(sf::RenderWindow& Window)
 
 	// Draw CurrentHealth + MaxHealth
 	sf::Text HealthText;
-	HealthText.setFont(Font);
+	HealthText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	HealthText.setString("Health " + std::to_string(CurrentHealth) + "/" + std::to_string(MaxHealth));
 	HealthText.setCharacterSize(24);
 	HealthText.setFillColor(sf::Color::Red);
@@ -273,7 +253,7 @@ void Player::Draw(sf::RenderWindow& Window)
 
 	// Draw Shield
 	sf::Text ShieldText;
-	ShieldText.setFont(Font);
+	ShieldText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	ShieldText.setString("Shield " + std::to_string(Shield));
 	ShieldText.setCharacterSize(24);
 	ShieldText.setFillColor(sf::Color::Cyan);
@@ -285,15 +265,15 @@ void Player::Draw(sf::RenderWindow& Window)
 	Window.draw(ShieldText);
 
 	// Draw CurrentEnergy + MaxEnergy
-	EnergyBackgroundSprite.setTexture(EnergyBackgroundTexture);
+	EnergyBackgroundSprite.setTexture(ResourceManager::GetInstance().GetTexture("EnergyBackground"));	// TODO : DELETE?
 
-	float EnergyBackgroundSpritePosX = 400.0f - EnergyBackgroundTexture.getSize().y;
+	float EnergyBackgroundSpritePosX = 400.0f - ResourceManager::GetInstance().GetTexture("EnergyBackground").getSize().y;
 	EnergyBackgroundSprite.setPosition(sf::Vector2f(25.0f, EnergyBackgroundSpritePosX));
 
 	Window.draw(EnergyBackgroundSprite);
 
 	sf::Text EnergyText;
-	EnergyText.setFont(Font);
+	EnergyText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	EnergyText.setString(std::to_string(CurrentEnergy) + "/" + std::to_string(MaxEnergy));
 	EnergyText.setCharacterSize(30);
 	EnergyText.setFillColor(sf::Color::Black);
@@ -403,7 +383,7 @@ void Player::ConsumeEnergy(const unsigned int Amount)
 {
 	if (int(CurrentEnergy) - int(Amount) < 0)
 	{
-		std::cout << "Not enough energy\n";	// TODO : delete
+		std::cout << "Not enough energy\n";
 	}
 	else
 	{
@@ -483,26 +463,16 @@ void Player::Print(std::ostream& os) const
 ///////////////////////			Enemy				///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-Enemy::Enemy(const std::string& FilePath, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, unsigned int MaxNextMove)
-	: Character(FilePath, Name, MaxHealth, Shield), NextMove(EnemyMove::None), IncomingMove(0), MaxNextMove(MaxNextMove)
+Enemy::Enemy(const std::string& TextureName, const std::string& Name, const unsigned int MaxHealth, const unsigned int Shield, unsigned int MaxNextMove)
+	: Character(TextureName, Name, MaxHealth, Shield), NextMove(EnemyMove::None), IncomingMove(0), MaxNextMove(MaxNextMove)
 {
 	std::cout << "New Enemy\n";
 
 	// Set Character Sprite Position
 	CharacterSprite.setPosition(sf::Vector2f(600.0f, 250.0f));
 
-	// Load Textures
-	if (!AttackTexture.loadFromFile("assets/others/attack.png"))  // TODO : Resource Manager
-	{
-		throw TextureError("assets/others/attack.png");
-	}
-
-	if (!ShieldTexture.loadFromFile("assets/others/defend.png"))  // TODO : Resource Manager
-	{
-		throw TextureError("assets/others/defend.png");
-	}
-
-	float AttackSpritePosX = CharacterSprite.getGlobalBounds().getPosition().x + CharacterSprite.getGlobalBounds().getSize().x / 2.0f - AttackTexture.getSize().x / 2.0f;
+	// Set Sprites
+	float AttackSpritePosX = CharacterSprite.getGlobalBounds().getPosition().x + CharacterSprite.getGlobalBounds().getSize().x / 2.0f - ResourceManager::GetInstance().GetTexture("Attack").getSize().x / 2.0f;
 	float AttackSpritePosY = CharacterSprite.getGlobalBounds().getPosition().y - 150.0f;
 	NextMoveSprite.setPosition(sf::Vector2f(AttackSpritePosX, AttackSpritePosY));
 }
@@ -510,9 +480,9 @@ Enemy::Enemy(const std::string& FilePath, const std::string& Name, const unsigne
 Enemy::Enemy(const Enemy& other)
 	: Character(other),
 	  NextMove(other.NextMove), IncomingMove(other.IncomingMove), MaxNextMove(other.MaxNextMove),
-	  AttackTexture(other.AttackTexture), ShieldTexture(other.ShieldTexture), NextMoveSprite(other.NextMoveSprite)
+	  NextMoveSprite(other.NextMoveSprite)
 {
-
+	// NextMoveSprite.setTexture();		// TODO : mai trb?
 }
 
 Enemy::~Enemy()
@@ -528,9 +498,8 @@ Enemy& Enemy::operator = (const Enemy& other)
 	IncomingMove = other.IncomingMove;
 	MaxNextMove = other.MaxNextMove;
 
-	AttackTexture = other.AttackTexture;
-	ShieldTexture = other.ShieldTexture;
 	NextMoveSprite = other.NextMoveSprite;
+	// NextMoveSprite.setTexture();			// TODO : mai trb?
 
 	return *this;
 }
@@ -544,7 +513,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 	if (NextMove != EnemyMove::None)
 	{
 		sf::Text NextMoveText;
-		NextMoveText.setFont(Font);
+		NextMoveText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 		NextMoveText.setCharacterSize(25);
 		NextMoveText.setFillColor(sf::Color::White);
 		NextMoveText.setString(std::to_string(IncomingMove));
@@ -552,11 +521,11 @@ void Enemy::Draw(sf::RenderWindow& Window)
 		switch (NextMove)
 		{
 			case EnemyMove::Attack:
-				NextMoveSprite.setTexture(AttackTexture);
+				NextMoveSprite.setTexture(ResourceManager::GetInstance().GetTexture("Attack"));
 				break;
 
 			case EnemyMove::Shield:
-				NextMoveSprite.setTexture(ShieldTexture);
+				NextMoveSprite.setTexture(ResourceManager::GetInstance().GetTexture("Shield"));
 				break;
 
 			default:
@@ -573,7 +542,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 
 	// Draw Name
 	sf::Text NameText;
-	NameText.setFont(Font);
+	NameText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	NameText.setString(Name);
 	NameText.setCharacterSize(24);
 	NameText.setFillColor(sf::Color::White);
@@ -583,7 +552,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 
 	// Draw CurrentHealth + MaxHealth
 	sf::Text HealthText;
-	HealthText.setFont(Font);
+	HealthText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	HealthText.setString("Health " + std::to_string(CurrentHealth) + "/" + std::to_string(MaxHealth));
 	HealthText.setCharacterSize(24);
 	HealthText.setFillColor(sf::Color::Red);
@@ -596,7 +565,7 @@ void Enemy::Draw(sf::RenderWindow& Window)
 
 	// Draw Shield
 	sf::Text ShieldText;
-	ShieldText.setFont(Font);
+	ShieldText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
 	ShieldText.setString("Shield " + std::to_string(Shield));
 	ShieldText.setCharacterSize(24);
 	ShieldText.setFillColor(sf::Color::Cyan);

@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "Singleton.h"
+
 #include <SFML/Graphics.hpp>
 
 /** Forward Declarations */
@@ -9,14 +11,9 @@ class Player;
 class Enemy;
 struct EnemyInfo;
 
-class Game
+class Game : public Singleton<Game>
 {
 private:
-	/** Constructor */
-	Game();
-
-	static Game Instance;
-
 	/** Player */
 	std::shared_ptr<Player> Player1;
 
@@ -26,12 +23,8 @@ private:
 	/** End Turn Button */
 	bool IsEndTurnButtonSelected;
 
-	/** Textures / Sprites */
-	sf::Texture EndTurnNormTexture;
-	sf::Texture EndTurnHoverTexture;
+	/** Sprites */
 	sf::Sprite EndTurnSprite;
-
-	sf::Texture BackgroundTexture;
 	sf::Sprite BackgroundSprite;
 
 	/** Levels */
@@ -41,18 +34,12 @@ private:
 
 	std::shared_ptr<Enemy> GetNextEnemy();
 
-	/** Font */
-	sf::Font Font;
-
 public:
+	/** Constructor */
+	Game();
+
 	/** Destructor */
 	~Game();
-
-	/** Copy Constructor */
-	Game(const Game&) = delete;
-
-	/** Operator = */
-	Game& operator = (const Game&) = delete;
 
 	/** Initialize */
 	void Init();
@@ -65,8 +52,5 @@ public:
 
 	/** Draw */
 	void Draw(sf::RenderWindow& Window);
-	
-	/** Getters */
-	inline static Game& GetInstance() { return Instance; }
 };
 

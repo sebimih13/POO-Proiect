@@ -12,7 +12,7 @@ class Enemy;
 class Card
 {
 private:
-	std::string FilePath;
+	std::string TextureName;
 	std::string Name;
 	std::string Description;
 
@@ -20,12 +20,11 @@ private:
 
 	bool IsSelected;
 
-	sf::Texture Texture;
 	sf::Sprite Sprite;
 
 public:
 	/** Constructor */
-	explicit Card(const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
+	explicit Card(const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
 
 	/** Copy Constructor */
 	explicit Card(const Card& other);
@@ -63,7 +62,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit DamageCard(unsigned int Damage, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
+	explicit DamageCard(unsigned int Damage, const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
 
 	/** Copy Constructor */
 	explicit DamageCard(const DamageCard& other);
@@ -90,7 +89,7 @@ private:
 
 public:
 	/** Constructor */
-	explicit ShieldCard(unsigned int Block, const std::string& FilePath, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
+	explicit ShieldCard(unsigned int Block, const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None", const unsigned int EnergyCost = 0);
 
 	/** Copy Constructor */
 	explicit ShieldCard(const ShieldCard& other);

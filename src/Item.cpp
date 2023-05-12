@@ -2,6 +2,7 @@
 
 #include "Character.h"
 #include "ExceptionHierarchy.h"
+#include "ResourceManager.h"
 
 #include <iostream>
 
@@ -9,26 +10,22 @@
 ///////////////////////				Item			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-Item::Item(const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: FilePath(FilePath), Name(Name), Description(Description),
+Item::Item(const std::string& TextureName, const std::string& Name, const std::string& Description)
+	: TextureName(TextureName), Name(Name), Description(Description),
 	  IsSelected(false)
 {
 	std::cout << "New Item\n";
 
-	if (!Texture.loadFromFile(FilePath))		// TODO : ResourceManager
-	{
-		throw TextureError(FilePath);
-	}
-
-	Sprite.setTexture(Texture);
+	// Set sprite
+	Sprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));
 }
 
 Item::Item(const Item& other)
-	: FilePath(other.FilePath), Name(other.Name), Description(other.Description),
+	: TextureName(other.TextureName), Name(other.Name), Description(other.Description),
 	  IsSelected(other.IsSelected),
-	  Texture(other.Texture), Sprite(other.Sprite)
+	  Sprite(other.Sprite)
 {
-
+	// TODO : set texture
 }
 
 Item::~Item()
@@ -38,14 +35,14 @@ Item::~Item()
 
 Item& Item::operator = (const Item& other)
 {
-	FilePath = other.FilePath;
+	TextureName = other.TextureName;
 	Name = other.Name;
 	Description = other.Description;
 
 	IsSelected = other.IsSelected;
 
-	Texture = other.Texture;
 	Sprite = other.Sprite;
+	// TODO : set texture
 
 	return *this;
 }
@@ -58,7 +55,7 @@ std::ostream& operator << (std::ostream& os, const Item& i)
 
 void Item::Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale)
 {
-	Sprite.setTexture(Texture);
+	Sprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));
 	Sprite.setPosition(Position);
 	Sprite.setScale(Scale);
 
@@ -114,8 +111,8 @@ void Item::Print(std::ostream& os) const
 ///////////////////////			HealthPotion		///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-HealthPotion::HealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: Item(FilePath, Name, Description),
+HealthPotion::HealthPotion(const unsigned int HP, const std::string& TextureName, const std::string& Name, const std::string& Description)
+	: Item(TextureName, Name, Description),
 	  HP(HP)
 {
 	std::cout << "New HealthPotion\n";
@@ -163,8 +160,8 @@ void HealthPotion::Print(std::ostream& os) const
 ///////////////////////			BlockPotion			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-BlockPotion::BlockPotion(const unsigned int Block, const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: Item(FilePath, Name, Description),
+BlockPotion::BlockPotion(const unsigned int Block, const std::string& TextureName, const std::string& Name, const std::string& Description)
+	: Item(TextureName, Name, Description),
 	  Block(Block)
 {
 	std::cout << "New BlockPotion\n";
@@ -212,8 +209,8 @@ void BlockPotion::Print(std::ostream& os) const
 ///////////////////////		FullEnergyPotion		///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-FullEnergyPotion::FullEnergyPotion(const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: Item(FilePath, Name, Description)
+FullEnergyPotion::FullEnergyPotion(const std::string& TextureName, const std::string& Name, const std::string& Description)
+	: Item(TextureName, Name, Description)
 {
 	std::cout << "New FullEnergyPotion\n";
 }
@@ -250,8 +247,8 @@ void FullEnergyPotion::Use(Player* const Owner)
 ///////////////////////			MaxHealthPotion		///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-MaxHealthPotion::MaxHealthPotion(const unsigned int HP, const std::string& FilePath, const std::string& Name, const std::string& Description)
-	: Item(FilePath, Name, Description), 
+MaxHealthPotion::MaxHealthPotion(const unsigned int HP, const std::string& TextureName, const std::string& Name, const std::string& Description)
+	: Item(TextureName, Name, Description),
 	  HP(HP)
 {
 	std::cout << "New MaxHealthPotion\n";

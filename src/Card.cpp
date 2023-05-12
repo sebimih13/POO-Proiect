@@ -2,6 +2,7 @@
 
 #include "Character.h"
 #include "ExceptionHierarchy.h"
+#include "ResourceManager.h"
 
 #include <iostream>
 
@@ -9,28 +10,24 @@
 ///////////////////////				Card			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-Card::Card(const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
-	: FilePath(FilePath), Name(Name), Description(Description),
+Card::Card(const std::string& TextureName, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
+	: TextureName(TextureName), Name(Name), Description(Description),
 	  EnergyCost(EnergyCost),
 	  IsSelected(false)
 {
 	std::cout << "New Card\n";
 
-	if (!Texture.loadFromFile(FilePath))	// TODO : ResourceManager
-	{
-		throw TextureError(FilePath);
-	}
-
-	Sprite.setTexture(Texture);
+	// Set sprite
+	Sprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));
 }
 
 Card::Card(const Card& Other)
-	: FilePath(Other.FilePath), Name(Other.Name), Description(Other.Description),
+	: TextureName(Other.TextureName), Name(Other.Name), Description(Other.Description),
 	  EnergyCost(Other.EnergyCost),
 	  IsSelected(Other.IsSelected),
-	  Texture(Other.Texture), Sprite(Other.Sprite)
+	  Sprite(Other.Sprite)
 {
-
+	// TODO : set texture
 }
 
 Card::~Card()
@@ -40,7 +37,7 @@ Card::~Card()
 
 Card& Card::operator = (const Card& Other) 
 {
-	FilePath = Other.FilePath;
+	TextureName = Other.TextureName;
 	Name = Other.Name;
 	Description = Other.Description;
 
@@ -48,8 +45,8 @@ Card& Card::operator = (const Card& Other)
 
 	IsSelected = Other.IsSelected;
 
-	Texture = Other.Texture;
 	Sprite = Other.Sprite;
+	// TODO : set texture
 
 	return *this;
 }
@@ -62,7 +59,7 @@ std::ostream& operator << (std::ostream& os, const Card& c)
 
 void Card::Draw(sf::RenderWindow& Window, const sf::Vector2f& Position, const sf::Vector2f& Scale)
 {
-	Sprite.setTexture(Texture);
+	Sprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));	// TODO : delete?
 	Sprite.setPosition(Position);
 	Sprite.setScale(Scale);
 
@@ -104,7 +101,7 @@ void Card::Update(const sf::Vector2i& MousePosition)
 
 void Card::Print(std::ostream& os) const
 {
-	os << "FilePath : " << FilePath << '\n';
+	os << "FilePath : " << TextureName << '\n';
 	os << "Name : " << Name << '\n';
 	os << "Description : " << Description << '\n';
 
@@ -115,8 +112,8 @@ void Card::Print(std::ostream& os) const
 ///////////////////////			DamageCard			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-DamageCard::DamageCard(unsigned int Damage, const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
-	: Card(FilePath, Name, Description, EnergyCost),
+DamageCard::DamageCard(unsigned int Damage, const std::string& TextureName, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
+	: Card(TextureName, Name, Description, EnergyCost),
 	  Damage(Damage)
 {
 	std::cout << "New DamageCard\n";
@@ -164,8 +161,8 @@ void DamageCard::Print(std::ostream& os) const
 ///////////////////////			ShieldCard			///////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-ShieldCard::ShieldCard(unsigned int Block, const std::string& FilePath, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
-	: Card(FilePath, Name, Description, EnergyCost),
+ShieldCard::ShieldCard(unsigned int Block, const std::string& TextureName, const std::string& Name, const std::string& Description, const unsigned int EnergyCost)
+	: Card(TextureName, Name, Description, EnergyCost),
 	  Block(Block)
 {
 	std::cout << "New ShieldCard\n";

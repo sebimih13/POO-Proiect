@@ -4,12 +4,11 @@
 #include "Card.h"
 #include "Item.h"
 #include "ExceptionHierarchy.h"
+#include "ResourceManager.h"
 
 #include <iostream>
 
 // Initialization of static const
-Game Game::Instance;
-
 bool Game::EndGame = false;
 unsigned int Game::CurrentLevel = 0;
 
@@ -25,38 +24,16 @@ Game::~Game()
 
 void Game::Init()
 {
-    // Load Font
-    if (!Font.loadFromFile("assets/fonts/PoppinsRegular.ttf"))	// TODO : ResourceManager
-    {
-        throw FontError("assets/fonts/PoppinsRegular.ttf");
-    }
-
-    Player1 = std::make_shared<Player>("assets/characters/Ironclad.png", "Eu");
+    Player1 = std::make_shared<Player>("Ironclad", "Eu");
     Enemy1 = GetNextEnemy();
 
-    // End Turn Button Norm + Hover
-    if (!EndTurnNormTexture.loadFromFile("assets/others/endTurnButtonNorm.png"))     // TODO : ResourceManager
-    {
-        throw TextureError("assets/others/endTurnButtonNorm.png");
-    }
+    // Set Sprites
+    EndTurnSprite.setTexture(ResourceManager::GetInstance().GetTexture("EndTurnNorm"));
 
-    if (!EndTurnHoverTexture.loadFromFile("assets/others/endTurnButtonHover.png"))     // TODO : ResourceManager
-    {
-        throw TextureError("assets/others/endTurnButtonHover.png");
-    }
-
-    EndTurnSprite.setTexture(EndTurnNormTexture);
-
-    float EndTurnSpriteX = 1200.0f / 2.0f - EndTurnNormTexture.getSize().x / 2.0f;
+    float EndTurnSpriteX = 1200.0f / 2.0f - ResourceManager::GetInstance().GetTexture("EndTurnNorm").getSize().x / 2.0f;
     EndTurnSprite.setPosition(sf::Vector2f(EndTurnSpriteX, -80.0f));
 
-    // Background
-    if (!BackgroundTexture.loadFromFile("assets/others/Background1.png"))       // TODO : ResourceManager
-    {
-        throw TextureError("assets/others/Background1.png");
-    }
-
-    BackgroundSprite.setTexture(BackgroundTexture);
+    BackgroundSprite.setTexture(ResourceManager::GetInstance().GetTexture("Background"));
     BackgroundSprite.setPosition(sf::Vector2f(0.0f, 0.0f));
 
     // Player
@@ -67,17 +44,17 @@ void Game::Init()
     Player1->RegenerateEnergy(1);
 
     // Cards
-    Player1->AddCard(std::make_shared<DamageCard>(6, "assets/cards/Strike.png", "Strike", "Deal 6 damage", 1));
-    Player1->AddCard(std::make_shared<DamageCard>(6, "assets/cards/Strike.png", "Strike", "Deal 6 damage", 1));
-    Player1->AddCard(std::make_shared<DamageCard>(32, "assets/cards/Bludgeon.png", "Bludgeon", "Deal 32 damage", 3));
-    Player1->AddCard(std::make_shared<ShieldCard>(5, "assets/cards/Defend.png", "Defend", "Gain 5 Block", 1));
-    Player1->AddCard(std::make_shared<ShieldCard>(30, "assets/cards/Impervious.png", "Impervious", "Gain 30 Block", 2));
+    Player1->AddCard(std::make_shared<DamageCard>(6, "Strike", "Strike", "Deal 6 damage", 1));
+    Player1->AddCard(std::make_shared<DamageCard>(6, "Strike", "Strike", "Deal 6 damage", 1));
+    Player1->AddCard(std::make_shared<DamageCard>(32, "Bludgeon", "Bludgeon", "Deal 32 damage", 3));
+    Player1->AddCard(std::make_shared<ShieldCard>(5, "Defend", "Defend", "Gain 5 Block", 1));
+    Player1->AddCard(std::make_shared<ShieldCard>(30, "Impervious", "Impervious", "Gain 30 Block", 2));
 
     // Items
-    Player1->AddItem(std::make_shared<HealthPotion>(10, "assets/items/BloodPotion.png", "Blood Potion", "Heal 10 HP"));
-    Player1->AddItem(std::make_shared<BlockPotion>(20, "assets/items/BlockPotion.png", "Block Potion", "Gain 20 Shield"));
-    Player1->AddItem(std::make_shared<FullEnergyPotion>("assets/items/EnergyPotion.png", "Energy Potion", "Regenerates your Energy"));
-    Player1->AddItem(std::make_shared<MaxHealthPotion>(50, "assets/items/HeartofIron.png", "Heart Of Iron", "Raise your max HP by 50"));
+    Player1->AddItem(std::make_shared<HealthPotion>(10, "BloodPotion", "Blood Potion", "Heal 10 HP"));
+    Player1->AddItem(std::make_shared<BlockPotion>(20, "BlockPotion", "Block Potion", "Gain 20 Shield"));
+    Player1->AddItem(std::make_shared<FullEnergyPotion>("EnergyPotion", "Energy Potion", "Regenerates your Energy"));
+    Player1->AddItem(std::make_shared<MaxHealthPotion>(50, "HeartofIron", "Heart Of Iron", "Raise your max HP by 50"));
 
     // Print new stats
     std::cout << *Player1 << '\n';
@@ -114,12 +91,12 @@ void Game::ProcessInput(const sf::Event& e, sf::RenderWindow& Window)
     if (490 <= sf::Mouse::getPosition(Window).x && sf::Mouse::getPosition(Window).x <= 705 &&
         10 <= sf::Mouse::getPosition(Window).y && sf::Mouse::getPosition(Window).y <= 90)
     {
-        EndTurnSprite.setTexture(EndTurnHoverTexture);
+        EndTurnSprite.setTexture(ResourceManager::GetInstance().GetTexture("EndTurnHover"));
         IsEndTurnButtonSelected = true;
     }
     else
     {
-        EndTurnSprite.setTexture(EndTurnNormTexture);
+        EndTurnSprite.setTexture(ResourceManager::GetInstance().GetTexture("EndTurnNorm"));
         IsEndTurnButtonSelected = false;
     }
 
@@ -222,7 +199,7 @@ void Game::Draw(sf::RenderWindow& Window)
     if (EndGame)
     {
         sf::Text EndGameText;
-        EndGameText.setFont(Font);
+        EndGameText.setFont(ResourceManager::GetInstance().GetFont("Poppins"));
         EndGameText.setCharacterSize(250);
         EndGameText.setOutlineColor(sf::Color::Black);
         EndGameText.setOutlineThickness(8.0f);
