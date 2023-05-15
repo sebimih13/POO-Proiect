@@ -4,7 +4,7 @@ template<typename T>
 class Singleton
 {
 private:
-	static T Instance;
+	/*static T Instance;*/
 
 protected:
 	/** Constructor */
@@ -20,6 +20,7 @@ public:
 	/** Getters */
 	static T& GetInstance() 
 	{
+		static T Instance;
 		return Instance; 
 	}
 };
