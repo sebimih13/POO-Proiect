@@ -44,6 +44,11 @@ int main()
         std::cout << err.what() << '\n';
         return -1;
     }
+    catch (LoadFileError& err)
+    {
+        std::cout << err.what() << '\n';
+        return -1;
+    }
     catch (GameError& err)
     {
         std::cout << err.what() << '\n';

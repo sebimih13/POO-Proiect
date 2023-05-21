@@ -19,6 +19,11 @@ Character::Character(const std::string& TextureName, const std::string& Name, co
 {
 	std::cout << "New Character : " << Name << '\n';
 
+	if (!ResourceManager::GetInstance().IsTextureValid(TextureName))
+	{
+		throw GameError("Character - Invalid Texture Name");
+	}
+
 	// Set Sprites
 	CharacterSprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));
 }

@@ -17,6 +17,11 @@ Card::Card(const std::string& TextureName, const std::string& Name, const std::s
 {
 	std::cout << "New Card\n";
 
+	if (!ResourceManager::GetInstance().IsTextureValid(TextureName))
+	{
+		throw GameError("Card - Invalid Texture Name");
+	}
+
 	// Set sprite
 	Sprite.setTexture(ResourceManager::GetInstance().GetTexture(TextureName));
 }

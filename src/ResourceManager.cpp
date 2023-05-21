@@ -64,3 +64,21 @@ void ResourceManager::Init()
 	}
 }
 
+bool ResourceManager::IsFontValid(const std::string& Name)
+{
+	if (Fonts.find(Name) != Fonts.end())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool ResourceManager::IsTextureValid(const std::string& Name)
+{
+	if (Textures.find(Name) != Textures.end())
+	{
+		return true;
+	}
+	return false;
+}
+
