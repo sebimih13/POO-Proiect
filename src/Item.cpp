@@ -248,3 +248,52 @@ void FullEnergyPotion::Use(Player* const Owner)
 	Owner->RegenerateFullEnergy();
 }
 
+///////////////////////////////////////////////////////////////////////////
+///////////////////////			MaxHealthPotion		///////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+MaxHealthPotion::MaxHealthPotion(const unsigned int HP, const std::string& TextureName, const std::string& Name, const std::string& Description)
+	: Item(TextureName, Name, Description),
+	  HP(HP)
+{
+	std::cout << "New MaxHealthPotion\n";
+}
+
+MaxHealthPotion::MaxHealthPotion(const MaxHealthPotion& other)
+	: Item(other),
+	  HP(other.HP)
+{
+
+}
+
+MaxHealthPotion::~MaxHealthPotion()
+{
+	std::cout << "Destruct MaxHealthPotion\n";
+}
+
+MaxHealthPotion& MaxHealthPotion::operator = (const MaxHealthPotion& other)
+{
+	Item::operator=(other);
+
+	HP = other.HP;
+
+	return *this;
+}
+
+std::shared_ptr<Item> MaxHealthPotion::Clone() const
+{
+	return std::make_shared<MaxHealthPotion>(*this);
+}
+
+void MaxHealthPotion::Use(Player* const Owner)
+{
+	Owner->IncreaseMaxHealth(HP);
+}
+
+void MaxHealthPotion::Print(std::ostream& os) const
+{
+	Item::Print(os);
+
+	os << "Increase Max Health : " << HP << '\n';
+}
+

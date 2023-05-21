@@ -54,6 +54,7 @@ void Game::Init()
     Player1->AddItem(std::make_shared<HealthPotion>(10, "BloodPotion", "Blood Potion", "Heal 10 HP"));
     Player1->AddItem(std::make_shared<BlockPotion>(20, "BlockPotion", "Block Potion", "Gain 20 Shield"));
     Player1->AddItem(std::make_shared<FullEnergyPotion>("EnergyPotion", "Energy Potion", "Regenerates your Energy"));
+    Player1->AddItem(std::make_shared<MaxHealthPotion>(50, "HeartofIron", "Heart Of Iron", "Raise your max HP by 50"));
 
     // Print new stats
     std::cout << *Player1 << '\n';

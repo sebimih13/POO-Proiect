@@ -132,4 +132,31 @@ public:
 	void Use(Player* const Owner) override;
 };
 
+class MaxHealthPotion : public Item
+{
+private:
+	unsigned int HP;
+
+public:
+	/** Constructor */
+	explicit MaxHealthPotion(const unsigned int HP, const std::string& TextureName, const std::string& Name = "None", const std::string& Description = "None");
+
+	/** Copy Constructor */
+	explicit MaxHealthPotion(const MaxHealthPotion& other);
+
+	/** Destructor */
+	~MaxHealthPotion() override;
+
+	/** Operator = */
+	MaxHealthPotion& operator = (const MaxHealthPotion& other);
+
+	/** Clone - Virtual Constructor */
+	std::shared_ptr<Item> Clone() const override;
+
+	/** Use Item */
+	void Use(Player* const Owner) override;
+
+protected:
+	void Print(std::ostream& os) const override;
+};
 
