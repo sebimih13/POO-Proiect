@@ -27,7 +27,6 @@ public:
 	inline sf::Font& GetFont(const std::string& Name) { return Fonts[Name]; }
 	inline sf::Texture& GetTexture(const std::string& Name) { return Textures[Name]; }
 
-	bool IsFontValid(const std::string& Name);
 	bool IsTextureValid(const std::string& Name);
 };
 
