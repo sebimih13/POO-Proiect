@@ -45,14 +45,13 @@
 ## Tema 3
 
 #### Cerințe
-- [ ] 2 șabloane de proiectare (design patterns)
-- [ ] o funcție șablon (template) cu sens; minim 2 instanțieri
-- [ ] o clasă șablon cu sens; minim 2 instanțieri
+- [X] 2 șabloane de proiectare (design patterns)
+- [X] o funcție șablon (template) cu sens; minim 2 instanțieri
+- [X] o clasă șablon cu sens; minim 2 instanțieri
 <!-- - [ ] o specializare pe funcție/clasă șablon -->
-- [ ] tag de `git`: de exemplu `v0.3` sau `v1.0`
+- [X] tag de `git`: de exemplu `v0.3` sau `v1.0`
 
 ## Resurse
 
 - [SFML](https://github.com/SFML/SFML/tree/aa82ea132b9296a31922772027ad5d14c1fa381b) (Zlib)
 - [Assets](https://slay-the-spire.fandom.com/wiki/Slay_the_Spire_Wiki)
-- adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit
