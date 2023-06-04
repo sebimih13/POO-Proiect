@@ -30,3 +30,4 @@ public:
 	bool IsTextureValid(const std::string& Name);
 };
 
+ 
